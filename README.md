@@ -65,4 +65,4 @@ ai-explainer-video/
 
 ## License
 
-No license has been declared yet. Add one before redistributing or accepting external contributions.
+MIT — see [LICENSE](LICENSE).
