@@ -1,0 +1,26 @@
+shot,beat,start,end,duration,scene,visual,on_screen_text,vo,sfx,transition,notes
+1,Hook,0.0,2.9,2.9,living,Person on sofa with phone,你在这里,Most people think...,pop,hard cut,wide
+2,Studio,2.9,4.8,1.9,studio,Team at desks,动画团队？,...,whoosh,hard cut,back view
+3,Red X,4.8,5.8,1.0,studioX,Red X over board,不是他们。,...,stamp,hard cut,close
+4,Stakes,5.8,9.4,3.6,stakes,Three cards,每一个问题/词/声音,...,pop,white wipe,graphic
+5,Reveal,9.4,11.6,2.2,reveal,Spotlight + nameplate,MODEL NAME,...,sparkle,hard cut,hero
+6,HQ,11.6,14.6,3.0,anthropic,Building + walkers,2021,...,whoosh,hard cut,wide
+7,OpenAI,14.6,16.2,1.6,openai,People leaving,OPENAI,...,whoosh,hard cut,wide
+8,Lab,16.2,18.0,1.8,lab,Robot + scientist,实验,...,pop,hard cut,medium
+9,Stage,18.0,21.8,3.8,stage,Three sizes,3 种尺寸,...,chime,hard cut,wide
+10,Title,21.8,23.6,1.8,title,Big question,它是怎么思考的？,...,whoosh,hard cut,graphic
+11,Library,23.6,28.2,4.6,library,Book tower + pullback,书/网站/代码,...,whoosh,hard cut,special move
+12,Classroom,28.2,31.0,2.8,classroom,Teacher + board,猜下一个词,...,pop,hard cut,wide
+13,Space,31.0,34.0,3.0,space,Counter,1 万亿,...,whoosh,hard cut,graphic
+14,Control,34.0,37.4,3.4,control,Screen face + panels,推理/计划/解决,...,beep,hard cut,wide
+15,Chat,37.4,39.0,1.6,chat,Hello card,你好！,...,pop,hard cut,medium
+16,Desk,39.0,42.8,3.8,desk,Code monitor + robot,写代码,...,typing,hard cut,medium
+17,ArtStudio,42.8,44.3,1.5,artstudio,Canvas,美术,...,pop,hard cut,medium
+18,Script,44.3,45.8,1.5,script,Script/typewriter,剧本,...,typing,hard cut,close
+19,Art,45.8,47.2,1.4,art,Artwork,美术,...,pop,hard cut,medium
+20,Animation,47.2,48.6,1.4,animation,Storyboard frames,动画,...,whoosh,hard cut,graphic
+21,Sound,48.6,50.0,1.4,sound,Waveform,声音,...,chime,hard cut,medium
+22,Office,50.0,53.4,3.4,office,Team + board,100 万+ 订阅,...,whoosh,hard cut,wide
+23,Check,53.4,55.0,1.6,check,Check + clock,几小时,...,chime,hard cut,medium
+24,Final,55.0,59.6,4.6,final,Person + card,这是人做的吗？,...,pop,hard cut,hero
+25,Hold,59.6,61.9,2.3,final,Hold,,...,silence,hold,end
