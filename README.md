@@ -12,12 +12,15 @@ Turn a complex idea into a **60–90 second narrated explainer**: flat-vector ch
 
 **Use it for**
 
-- AI / technology concept explainers
-- Product launches and founder POV
-- B2B sales, IR, and event loops
-- Media explainer / video-essay content
-- Courses, onboarding, internal training
-- Multi-language and multi-aspect campaigns
+- Syncing a design-system vocabulary across a team ("from today we call it *stagger*")
+- Replacing a three-page brief when briefing freelancers or vendors: point at a name and say "this one"
+- Building the word list *before* prompting an AI — "make it premium" is not a prompt, "elastic.out(1, 0.5) with a 12% overshoot" is
+- Onboarding and hiring: a new hire learns how the team moves on day one
+- Course and workshop openers — hand out the 14 names, then teach the parameters
+- Proposals where the client cannot say what they want, only react to what they see
+- "N things in N seconds" social posts
+
+**Who it is for** — people who have to *say* what a motion should be: design-system and brand leads, motion designers explaining their work, PMs and interaction designers writing briefs, creative directors and agencies aligning a client, founders and marketers who need the words, anyone making video with AI, and teachers who want a shared vocabulary before the technique.
 
 **Package contents**
 
