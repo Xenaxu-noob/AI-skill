@@ -66,3 +66,39 @@ ai-explainer-video/
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+### [motion-lexicon-reel](motion-lexicon-reel/)
+
+Turn a vocabulary into a **15-second, code-rendered specimen reel**: 14 named motion moves, each demonstrated on a geometric object while the card names it — Swiss grid, a drifting motif field, a player-style HUD, three real spec rows per entry, and a 24-tile index wall on the end card.
+
+![motion-lexicon-reel cover](motion-lexicon-reel/cover_16x9.jpg)
+
+**Use it for**
+
+- Design-system and motion-vocabulary teasers (easing, stagger, morph, glitch)
+- "N things in N seconds" social posts and channel bumpers
+- Component / icon / pattern library showreels
+- Teaching design fundamentals, editing grammar, camera language
+- Conference openers, proposal warm-ups, course chapter cards
+
+**Package contents**
+
+```text
+motion-lexicon-reel/
+  SKILL.md                     # main skill contract and workflow
+  UPLOAD.md                    # title / description / tags for the skill platform
+  cover_16x9.jpg               # 1920x1080 cover
+  cover_16x9_1280.jpg          # 1280x720 cover
+  references/
+    style-bible.md             # grid numbers, type scale, palette, motif system, line discipline
+    timeline.md                # the 14 x 0.9 s structure, retiming maths, audio sync
+    qa-checklist.md            # pre-delivery checks
+  template/
+    index.html                 # HyperFrames root, 15.8 s
+    compositions/sheet.html    # the whole film: cards, palette, motif field, timeline
+    scripts/make_percussion.py # original 150 BPM percussion, cut-locked
+  templates/
+    entries.json               # the entry list (14 cards)
+```
+
+**Output spec** — 1920×1080 · 30 fps · 15.8 s · H.264 + AAC · −15.6 LUFS · no model calls, no stock footage.

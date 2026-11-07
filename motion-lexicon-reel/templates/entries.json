@@ -1,0 +1,189 @@
+{
+  "title": "每个动作都有名字",
+  "subtitle": "14 cards × 0.9 s, then a 3.2 s end card",
+  "total": "15.8 s",
+  "entries": [
+    {
+      "n": 1,
+      "id": "001",
+      "zh": "弹性入场",
+      "en": "pop-in",
+      "def": "弹跳着出现，略过冲再回弹",
+      "spec": {
+        "duration": "0.50 s",
+        "ease": "elastic.out(1, 0.5)",
+        "cut": "0.00",
+        "cutLabel": "0.00 s · 第 1 刀"
+      }
+    },
+    {
+      "n": 2,
+      "id": "002",
+      "zh": "交错动画",
+      "en": "stagger",
+      "def": "错开时间，依次出现",
+      "spec": {
+        "duration": "0.40 s + 0.06 错开",
+        "ease": "expo.out",
+        "cut": "0.90",
+        "cutLabel": "0.90 s · 第 2 刀"
+      }
+    },
+    {
+      "n": 3,
+      "id": "003",
+      "zh": "放射爆发",
+      "en": "burst",
+      "def": "向外迸出线条与圆点",
+      "spec": {
+        "duration": "0.35 s",
+        "ease": "expo.out",
+        "cut": "1.80",
+        "cutLabel": "1.80 s · 第 3 刀"
+      }
+    },
+    {
+      "n": 4,
+      "id": "004",
+      "zh": "线条描绘",
+      "en": "line draw",
+      "def": "线条被一点点画出来",
+      "spec": {
+        "duration": "0.70 s",
+        "ease": "power2.inOut",
+        "cut": "2.70",
+        "cutLabel": "2.70 s · 第 4 刀"
+      }
+    },
+    {
+      "n": 5,
+      "id": "005",
+      "zh": "遮罩显现",
+      "en": "mask reveal",
+      "def": "从看不见的边界后移出",
+      "spec": {
+        "duration": "0.50 s",
+        "ease": "power4.out",
+        "cut": "3.60",
+        "cutLabel": "3.60 s · 第 5 刀"
+      }
+    },
+    {
+      "n": 6,
+      "id": "006",
+      "zh": "打字机",
+      "en": "typewriter",
+      "def": "逐字出现",
+      "spec": {
+        "duration": "0.12 s × 5",
+        "ease": "steps(1) 逐字",
+        "cut": "4.50",
+        "cutLabel": "4.50 s · 第 6 刀"
+      }
+    },
+    {
+      "n": 7,
+      "id": "007",
+      "zh": "数字递增",
+      "en": "count-up",
+      "def": "快速递增到目标值",
+      "spec": {
+        "duration": "0.72 s",
+        "ease": "expo.out",
+        "cut": "5.40",
+        "cutLabel": "5.40 s · 第 7 刀"
+      }
+    },
+    {
+      "n": 8,
+      "id": "011",
+      "zh": "挤压与拉伸",
+      "en": "squash & stretch",
+      "def": "压扁与拉长，表现弹性",
+      "spec": {
+        "duration": "0.26 + 0.07 s",
+        "ease": "power2.in / out",
+        "cut": "6.30",
+        "cutLabel": "6.30 s · 第 8 刀"
+      }
+    },
+    {
+      "n": 9,
+      "id": "012",
+      "zh": "形状变形",
+      "en": "shape morph",
+      "def": "一种形状变成另一种",
+      "spec": {
+        "duration": "0.30 s × 2",
+        "ease": "power2.inOut",
+        "cut": "7.20",
+        "cutLabel": "7.20 s · 第 9 刀"
+      }
+    },
+    {
+      "n": 10,
+      "id": "016",
+      "zh": "视差",
+      "en": "parallax",
+      "def": "远近图层，速度不同",
+      "spec": {
+        "duration": "0.80 s",
+        "ease": "power2.out",
+        "cut": "8.10",
+        "cutLabel": "8.10 s · 第 10 刀"
+      }
+    },
+    {
+      "n": 11,
+      "id": "021",
+      "zh": "翻转",
+      "en": "flip",
+      "def": "翻面，展示另一侧",
+      "spec": {
+        "duration": "0.56 s",
+        "ease": "power3.inOut",
+        "cut": "9.00",
+        "cutLabel": "9.00 s · 第 11 刀"
+      }
+    },
+    {
+      "n": 12,
+      "id": "022",
+      "zh": "扫光",
+      "en": "light sweep",
+      "def": "一道光掠过表面",
+      "spec": {
+        "duration": "0.44 s",
+        "ease": "power2.inOut",
+        "cut": "9.90",
+        "cutLabel": "9.90 s · 第 12 刀"
+      }
+    },
+    {
+      "n": 13,
+      "id": "023",
+      "zh": "故障效果",
+      "en": "glitch",
+      "def": "错位与分色",
+      "spec": {
+        "duration": "0.30 s",
+        "ease": "steps(1) 6 帧",
+        "cut": "10.80",
+        "cutLabel": "10.80 s · 第 13 刀"
+      }
+    },
+    {
+      "n": 14,
+      "id": "024",
+      "zh": "冲击震动",
+      "en": "impact shake",
+      "def": "落物带动整个画面震动",
+      "spec": {
+        "duration": "0.18 s",
+        "ease": "power4.in",
+        "cut": "11.70",
+        "cutLabel": "11.70 s · 第 14 刀"
+      }
+    }
+  ]
+}

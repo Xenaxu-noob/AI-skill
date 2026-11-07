@@ -1,0 +1,1206 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "NowBlack";
+      src: url("assets/fonts/NotoSansSC-Black.otf") format("opentype");
+      font-weight: 900;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a0a0a;
+      --ink: #0a0a0a;
+      --paper: #f3f0e8;
+      --blue: #1b31ff;
+      --lime: #cbff00;
+      --orange: #ff4a12;
+      --pink: #ff2d7a;
+      --red: #ff2200;
+      --cjk: "NowBlack", sans-serif;
+      --disp: "Archivo Black", sans-serif;
+      --mono: "JetBrains Mono", monospace;
+    }
+
+
+    /* ── motif field ── adapted from skill-factory/pictogram-catalog-reel:
+       a square grid of discs/motifs in five tones, rows drifting in alternate directions */
+    #pattern {
+      opacity: 0.40;
+      position: absolute;
+      left: -80px;
+      right: -80px;
+      top: 60px;
+      bottom: 88px;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .prow {
+      position: absolute;
+      left: 0;
+      display: flex;
+    }
+    .prow i {
+      display: block;
+      width: 120px;
+      height: 120px;
+      flex: 0 0 120px;
+    }
+    .m0 { background: radial-gradient(circle at 0% 0%, var(--m1) 0 99%, transparent 99%); }
+    .m1 { background: radial-gradient(circle at 50% 100%, var(--m1) 0 49.5%, transparent 49.5%); }
+    .m2 { background: radial-gradient(circle at 50% 50%, var(--m2) 0 9%, var(--m1) 9% 28%, transparent 28%); }
+    .m3 { background-image: conic-gradient(var(--m1) 0 25%, transparent 0 50%, var(--m1) 0 75%, transparent 0); background-size: 50% 50%; }
+    .m4 { background-image: radial-gradient(circle at 50% 50%, var(--m1) 0 14%, transparent 14%); background-size: 33% 33%; }
+    #stage {
+      position: absolute;
+      inset: 0;
+    }
+    #ground {
+      position: absolute;
+      inset: 0;
+      background: #0a0a0a;
+    }
+
+    /* ── player chrome ── */
+    #topbar,
+    #bottombar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      background: #0a0a0a;
+      z-index: 4;
+    }
+    #topbar {
+      top: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 96px;
+      gap: 30px;
+    }
+    #topbar .brand {
+      font-family: var(--mono);
+      font-size: 15px;
+      letter-spacing: 0.24em;
+      color: rgba(255, 255, 255, 0.6);
+      white-space: nowrap;
+    }
+    #ticker {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    #topbar .total {
+      font-family: var(--mono);
+      font-size: 15px;
+      letter-spacing: 0.18em;
+      color: rgba(255, 255, 255, 0.6);
+      white-space: nowrap;
+    }
+    #bottombar {
+      bottom: 0;
+      height: 88px;
+    }
+    #track {
+      position: absolute;
+      left: 96px;
+      right: 96px;
+      top: 30px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.16);
+    }
+    #fill {
+      position: absolute;
+      inset: 0;
+      background: var(--lime);
+      transform-origin: left center;
+    }
+
+    /* ── left column: the entry ── */
+    .en {
+      position: absolute;
+      left: 96px;
+      top: 108px;
+      font-family: var(--mono);
+      font-size: 19px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    .w {
+      position: absolute;
+      color: inherit;
+      left: 96px;
+      top: 156px;
+      font-family: var(--cjk);
+      font-weight: 900;
+      font-size: 196px;
+      line-height: 0.86;
+      letter-spacing: -0.035em;
+      white-space: nowrap;
+    }
+    .specs {
+      position: absolute;
+      left: 96px;
+      top: 396px;
+      width: 900px;
+    }
+    .specs .r {
+      display: flex;
+      align-items: baseline;
+      height: 34px;
+    }
+    .specs .k {
+      width: 92px;
+      flex: 0 0 92px;
+      font-family: var(--mono);
+      font-size: 16px;
+      letter-spacing: 0.2em;
+      opacity: 0.72;
+    }
+    .specs .v {
+      font-family: var(--mono);
+      font-size: 22px;
+      letter-spacing: 0.05em;
+    }
+    .def {
+      position: absolute;
+      left: 96px;
+      top: 520px;
+      width: 880px;
+      font-family: var(--cjk);
+      font-weight: 900;
+      font-size: 22px;
+      line-height: 1.5;
+      letter-spacing: 0.04em;
+      opacity: 0.9;
+    }
+    .cat {
+      position: absolute;
+      left: 96px;
+      top: 840px;
+      font-family: var(--mono);
+      font-size: 17px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      opacity: 0.62;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .cat span {
+      font-family: var(--cjk);
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      opacity: 0.9;
+      margin-left: 16px;
+    }
+    .lab {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .lab .n {
+      position: absolute;
+      left: 96px;
+      bottom: 12px;
+      font-family: var(--mono);
+      font-size: 19px;
+      letter-spacing: 0.12em;
+      color: var(--lime);
+    }
+    .lab .n i {
+      font-style: normal;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .lab .i {
+      position: absolute;
+      right: 96px;
+      bottom: 12px;
+      font-family: var(--mono);
+      font-size: 19px;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .beat {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      /* the colour field is a child, so it stops at the chrome */
+    }
+    .field {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 60px;
+      bottom: 88px;
+    }
+
+    /* ── right stage: the specimen ── */
+    .spec {
+      position: absolute;
+      left: 1118px;
+      top: 208px;
+      width: 706px;
+      height: 700px;
+    }
+    .center {
+      position: absolute;
+      left: 336px;
+      top: 350px;
+    }
+
+    /* 001 pop-in */
+    #b1sq {
+      position: absolute;
+      left: 146px;
+      top: 160px;
+      width: 380px;
+      height: 380px;
+    }
+
+    /* 002 stagger */
+    #b2cols {
+      position: absolute;
+      left: 43px;
+      top: 160px;
+      display: flex;
+      gap: 22px;
+      align-items: flex-end;
+      height: 400px;
+    }
+    #b2cols i {
+      display: block;
+      width: 130px;
+      height: 400px;
+      transform-origin: bottom center;
+    }
+    #b2cols i:nth-child(1) {
+      height: 200px;
+    }
+    #b2cols i:nth-child(2) {
+      height: 300px;
+    }
+    #b2cols i:nth-child(3) {
+      height: 400px;
+    }
+    #b2cols i:nth-child(4) {
+      height: 260px;
+    }
+
+    /* 003 burst */
+    #b3core {
+      position: absolute;
+      left: 256px;
+      top: 270px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+    }
+    .ray {
+      position: absolute;
+      left: 333px;
+      top: 350px;
+      width: 8px;
+      height: 220px;
+      transform-origin: center top;
+    }
+
+    /* 004 line draw */
+    #b4svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 672px;
+      height: 700px;
+    }
+
+    /* 005 mask reveal */
+    #b5panel {
+      position: absolute;
+      left: 56px;
+      top: 170px;
+      width: 560px;
+      height: 360px;
+      overflow: hidden;
+    }
+    #b5inner {
+      position: absolute;
+      left: 0;
+      top: 360px;
+      width: 560px;
+      height: 360px;
+    }
+
+    /* 006 typewriter */
+    #b6box {
+      position: absolute;
+      left: 36px;
+      top: 240px;
+      width: 600px;
+      height: 220px;
+      border: 4px solid;
+      display: flex;
+      align-items: center;
+      padding: 0 30px;
+      font-family: var(--mono);
+      font-size: 96px;
+      letter-spacing: 0.06em;
+      overflow: hidden;
+    }
+    #b6box .tw {
+      opacity: 0;
+    }
+    #b6caret {
+      display: inline-block;
+      width: 12px;
+      height: 104px;
+      margin-left: 6px;
+    }
+
+    /* 007 count-up */
+    #b7num {
+      position: absolute;
+      left: 16px;
+      top: 180px;
+      width: 640px;
+      text-align: center;
+      font-family: var(--disp);
+      font-size: 300px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    /* 008 squash */
+    #b8floor {
+      position: absolute;
+      left: 56px;
+      top: 604px;
+      width: 560px;
+      height: 6px;
+    }
+    #b8ball {
+      position: absolute;
+      left: 236px;
+      top: 340px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      transform-origin: center bottom;
+    }
+
+    /* 009 shape morph */
+    #b8 .w {
+      font-size: 168px;
+    }
+    #b9shape {
+      position: absolute;
+      left: 126px;
+      top: 140px;
+      width: 420px;
+      height: 420px;
+      clip-path: polygon(50% 0%, 93.3% 25%, 100% 50%, 93.3% 75%, 50% 100%, 6.7% 75%, 0% 50%, 6.7% 25%);
+    }
+
+    /* 010 parallax */
+    #b10layers {
+      position: absolute;
+      left: 36px;
+      top: 170px;
+      width: 600px;
+      height: 400px;
+    }
+    #b10layers i {
+      position: absolute;
+      left: 0;
+      display: block;
+      height: 110px;
+    }
+    #b10layers i:nth-child(1) {
+      top: 10px;
+      width: 600px;
+    }
+    #b10layers i:nth-child(2) {
+      top: 150px;
+      width: 400px;
+    }
+    #b10layers i:nth-child(3) {
+      top: 290px;
+      width: 520px;
+    }
+
+    /* 011 flip */
+    #b11card {
+      position: absolute;
+      left: 76px;
+      top: 200px;
+      width: 520px;
+      height: 300px;
+      transform-style: preserve-3d;
+    }
+    #b11card .face {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--disp);
+      font-size: 120px;
+      letter-spacing: 0.02em;
+      backface-visibility: hidden;
+    }
+    #b11card .back {
+      transform: rotateY(180deg);
+    }
+
+    /* 012 light sweep */
+    #b12panel {
+      position: absolute;
+      left: 56px;
+      top: 160px;
+      width: 560px;
+      height: 380px;
+      overflow: hidden;
+    }
+    #b12band {
+      position: absolute;
+      left: -260px;
+      top: -100px;
+      width: 260px;
+      height: 600px;
+      transform: rotate(14deg);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.9) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+    }
+
+    /* 013 glitch */
+    #b13bar {
+      position: absolute;
+      left: 36px;
+      top: 240px;
+      width: 600px;
+      height: 220px;
+    }
+    #b13bar i {
+      position: absolute;
+      inset: 0;
+      display: block;
+      mix-blend-mode: screen;
+      opacity: 0;
+    }
+
+    /* 014 impact */
+    #b14slab {
+      position: absolute;
+      left: 86px;
+      top: 160px;
+      width: 500px;
+      height: 380px;
+    }
+
+    /* ── specimens: motif-built, no plain blocks ── */
+    #b1sq { border-radius: 50%; background-image: radial-gradient(circle at 70% 30%, #1b31ff 0 47%, transparent 47%); }
+    #b2cols i { border-radius: 999px 999px 0 0; }
+    #b2cols i:nth-child(2n) { background-image: radial-gradient(circle at 50% 50%, #0a0a0a 0 20%, transparent 20%); background-size: 44px 44px; }
+    #b5inner { background-image: conic-gradient(#cbff00 0 25%, transparent 0 50%, #cbff00 0 75%, transparent 0); background-size: 60px 60px; }
+    #b11card .front { background-image: conic-gradient(#cbff00 0 25%, transparent 0 50%, #cbff00 0 75%, transparent 0); background-size: 44px 44px; }
+    #b11card .back { background-image: radial-gradient(circle at 50% 50%, #cbff00 0 17%, transparent 17%); background-size: 32px 32px; }
+    #b12panel { border-radius: 50%; background-image: repeating-conic-gradient(from 0deg, rgba(10,10,10,.30) 0deg 9deg, transparent 9deg 18deg); }
+    #b14slab { border-radius: 50%; background-image: repeating-conic-gradient(from 0deg, rgba(255,34,0,.35) 0deg 10deg, transparent 10deg 20deg); }
+    #b8ball { background-image: radial-gradient(circle at 38% 32%, rgba(255,255,255,.55) 0 12%, transparent 12%); }
+    #b10layers i:nth-child(2) { background-image: radial-gradient(circle at 50% 50%, #0a0a0a 0 16%, transparent 16%); background-size: 36px 36px; }
+
+    #curtain {
+      position: absolute;
+      inset: 0;
+      background: #000000;
+      z-index: 50;
+      pointer-events: none;
+    }
+    #flash {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      opacity: 0;
+      z-index: 7;
+      pointer-events: none;
+    }
+
+    /* ── end card ── */
+    #bend .num {
+      position: absolute;
+      left: 96px;
+      top: 84px;
+      font-family: var(--disp);
+      font-size: 320px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    #bend .fact {
+      position: absolute;
+      left: 96px;
+      top: 464px;
+      font-family: var(--cjk);
+      font-weight: 900;
+      font-size: 40px;
+      letter-spacing: 0.01em;
+      opacity: 0.66;
+    }
+    #bend .thesis {
+      position: absolute;
+      left: 96px;
+      font-family: var(--cjk);
+      font-weight: 900;
+      font-size: 66px;
+      line-height: 1.26;
+      letter-spacing: 0.005em;
+      white-space: nowrap;
+    }
+    #bend .t1 {
+      top: 548px;
+    }
+    #bend .t2 {
+      top: 632px;
+    }
+    #bend .t2 em {
+      font-style: normal;
+      color: var(--lime);
+    }
+    #bend .credit {
+      position: absolute;
+      left: 96px;
+      top: 800px;
+      font-family: var(--mono);
+      font-size: 18px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.62);
+    }
+    /* 24-tile index grid — a motif wall for the 24 entries of the pack */
+    #grid {
+      position: absolute;
+      left: 1118px;
+      top: 252px;
+      width: 720px;
+    }
+    #grid .grow {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    #grid b {
+      position: relative;
+      display: block;
+      width: 108px;
+      height: 108px;
+      flex: 0 0 108px;
+      background-color: rgba(255, 255, 255, 0.05);
+      outline: 1px solid rgba(255, 255, 255, 0.16);
+    }
+    #grid b::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 40px;
+      background: linear-gradient(transparent, rgba(10, 10, 10, 0.78));
+    }
+    #grid u {
+      position: absolute;
+      left: 8px;
+      bottom: 6px;
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.9);
+      z-index: 2;
+    }
+    #grid .m0 { background-image: radial-gradient(circle at 0% 0%, var(--g1) 0 99%, transparent 99%); }
+    #grid .m1 { background-image: radial-gradient(circle at 50% 100%, var(--g1) 0 49.5%, transparent 49.5%); }
+    #grid .m2 { background-image: radial-gradient(circle at 50% 50%, var(--g2) 0 9%, var(--g1) 9% 28%, transparent 28%); }
+    #grid .m3 { background-image: conic-gradient(var(--g1) 0 25%, transparent 0 50%, var(--g1) 0 75%, transparent 0); background-size: 50% 50%; }
+    #grid .grow:first-child b { background-color: rgba(203, 255, 0, 0.88); }
+    #grid .m5 { background-image: radial-gradient(circle at 72% 28%, #0a0a0a 0 46%, transparent 46%); }
+    #grid .m4 { background-image: radial-gradient(circle at 50% 50%, var(--g1) 0 14%, transparent 14%); background-size: 33% 33%; }
+  </style>
+
+  <div id="root" data-composition-id="sheet" data-width="1920" data-height="1080">
+    <div id="stage">
+      <div id="ground"></div>
+
+      <div id="pattern" data-layout-ignore>
+      <div class="prow" id="prow0" style="top:0px"><i class="m0"></i><i class=""></i><i class="m0"></i><i class="m0"></i><i class="m1"></i><i class=""></i><i class="m1"></i><i class="m4"></i><i class="m2"></i><i class="m0"></i><i class=""></i><i class="m0"></i><i class="m0"></i><i class="m1"></i><i class=""></i></div>
+      <div class="prow" id="prow1" style="top:120px"><i class="m0"></i><i class="m0"></i><i class="m1"></i><i class=""></i><i class="m1"></i><i class="m4"></i><i class="m2"></i><i class="m0"></i><i class=""></i><i class="m0"></i><i class="m0"></i><i class="m1"></i><i class=""></i><i class="m1"></i><i class="m4"></i></div>
+      <div class="prow" id="prow2" style="top:240px"><i class="m1"></i><i class=""></i><i class="m1"></i><i class="m4"></i><i class="m2"></i><i class="m0"></i><i class=""></i><i class="m0"></i><i class="m0"></i><i class="m1"></i><i class=""></i><i class="m1"></i><i class="m4"></i><i class="m2"></i><i class="m0"></i></div>
+      <div class="prow" id="prow3" style="top:360px"><i class="m1"></i><i class="m4"></i><i class="m2"></i><i class="m0"></i><i class=""></i><i class="m0"></i><i class="m0"></i><i class="m1"></i><i class=""></i><i class="m1"></i><i class="m4"></i><i class="m2"></i><i class="m0"></i><i class=""></i><i class="m0"></i></div>
+      <div class="prow" id="prow4" style="top:480px"><i class="m2"></i><i class="m0"></i><i class=""></i><i class="m0"></i><i class="m0"></i><i class="m1"></i><i class=""></i><i class="m1"></i><i class="m4"></i><i class="m2"></i><i class="m0"></i><i class=""></i><i class="m0"></i><i class="m0"></i><i class="m1"></i></div>
+      <div class="prow" id="prow5" style="top:600px"><i class=""></i><i class="m0"></i><i class="m0"></i><i class="m1"></i><i class=""></i><i class="m1"></i><i class="m4"></i><i class="m2"></i><i class="m0"></i><i class=""></i><i class="m0"></i><i class="m0"></i><i class="m1"></i><i class=""></i><i class="m1"></i></div>
+      </div>
+
+      <!-- 001 · pop-in -->
+      <div class="beat clip" id="b1" data-start="0" data-duration="0.9" data-track-index="1" style="color:#ffffff">
+        <div class="en">pop-in</div>
+        <div class="w">弹性入场</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.50 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">elastic.out(1, 0.5)</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">0.00 s · 第 1 刀</span></div>
+        </div>
+        <div class="def">弹跳着出现，略过冲再回弹</div>
+        <div class="cat">entrances &amp; text<span>入场与文字</span></div>
+        <div class="spec"><div id="b1sq"></div></div>
+      </div>
+
+      <!-- 002 · stagger -->
+      <div class="beat clip" id="b2" data-start="0.9" data-duration="0.9" data-track-index="2" style="color:#cbff00">
+        <div class="en">stagger</div>
+        <div class="w">交错动画</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.40 s + 0.06 错开</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">expo.out</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">0.90 s · 第 2 刀</span></div>
+        </div>
+        <div class="def">错开时间，依次出现</div>
+        <div class="cat">entrances &amp; text<span>入场与文字</span></div>
+        <div class="spec"><div id="b2cols"><i></i><i></i><i></i><i></i></div></div>
+      </div>
+
+      <!-- 003 · burst -->
+      <div class="beat clip" id="b3" data-start="1.8" data-duration="0.9" data-track-index="3" style="color:#0a0a0a">
+        <div class="en">burst</div>
+        <div class="w">放射爆发</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.35 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">expo.out</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">1.80 s · 第 3 刀</span></div>
+        </div>
+        <div class="def">向外迸出线条与圆点</div>
+        <div class="cat">entrances &amp; text<span>入场与文字</span></div>
+        <div class="spec">
+          <div id="b3core"></div>
+          <div class="ray" style="transform: rotate(0deg) translateY(-110px)"></div>
+          <div class="ray" style="transform: rotate(45deg) translateY(-110px)"></div>
+          <div class="ray" style="transform: rotate(90deg) translateY(-110px)"></div>
+          <div class="ray" style="transform: rotate(135deg) translateY(-110px)"></div>
+          <div class="ray" style="transform: rotate(180deg) translateY(-110px)"></div>
+          <div class="ray" style="transform: rotate(225deg) translateY(-110px)"></div>
+          <div class="ray" style="transform: rotate(270deg) translateY(-110px)"></div>
+          <div class="ray" style="transform: rotate(315deg) translateY(-110px)"></div>
+        </div>
+      </div>
+
+      <!-- 004 · line draw -->
+      <div class="beat clip" id="b4" data-start="2.7" data-duration="0.9" data-track-index="4" style="color:#0a0a0a">
+        <div class="en">line draw</div>
+        <div class="w">线条描绘</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.70 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">power2.inOut</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">2.70 s · 第 4 刀</span></div>
+        </div>
+        <div class="def">线条被一点点画出来</div>
+        <div class="cat">entrances &amp; text<span>入场与文字</span></div>
+        <div class="spec">
+          <svg id="b4svg" viewBox="0 0 672 700">
+            <path
+              id="b4path"
+              d="M 40 600 L 180 380 L 330 470 L 450 200 L 560 350 L 640 150"
+              fill="none"
+              stroke-width="12"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- 005 · mask reveal -->
+      <div class="beat clip" id="b5" data-start="3.6" data-duration="0.9" data-track-index="5" style="color:#0a0a0a">
+        <div class="en">mask reveal</div>
+        <div class="w">遮罩显现</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.50 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">power4.out</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">3.60 s · 第 5 刀</span></div>
+        </div>
+        <div class="def">从看不见的边界后移出</div>
+        <div class="cat">entrances &amp; text<span>入场与文字</span></div>
+        <div class="spec">
+          <div id="b5panel"><div id="b5inner"></div></div>
+        </div>
+      </div>
+
+      <!-- 006 · typewriter -->
+      <div class="beat clip" id="b6" data-start="4.5" data-duration="0.9" data-track-index="6" style="color:#ffffff">
+        <div class="en">typewriter</div>
+        <div class="w">打字机</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.12 s × 5</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">steps(1) 逐字</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">4.50 s · 第 6 刀</span></div>
+        </div>
+        <div class="def">逐字出现</div>
+        <div class="cat">entrances &amp; text<span>入场与文字</span></div>
+        <div class="spec">
+          <div id="b6box"><span class="tw">H</span><span class="tw">E</span><span class="tw">L</span><span class="tw">L</span><span class="tw">O</span><span id="b6caret"></span></div>
+        </div>
+      </div>
+
+      <!-- 007 · count-up -->
+      <div class="beat clip" id="b7" data-start="5.4" data-duration="0.9" data-track-index="7" style="color:#0a0a0a">
+        <div class="en">count-up</div>
+        <div class="w">数字递增</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.72 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">expo.out</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">5.40 s · 第 7 刀</span></div>
+        </div>
+        <div class="def">快速递增到目标值</div>
+        <div class="cat">entrances &amp; text<span>入场与文字</span></div>
+        <div class="spec"><div id="b7num">000</div></div>
+      </div>
+
+      <!-- 008 · squash & stretch -->
+      <div class="beat clip" id="b8" data-start="6.3" data-duration="0.9" data-track-index="8" style="color:#ffffff">
+        <div class="en">squash &amp; stretch</div>
+        <div class="w">挤压与拉伸</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.26 + 0.07 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">power2.in / out</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">6.30 s · 第 8 刀</span></div>
+        </div>
+        <div class="def">压扁与拉长，表现弹性</div>
+        <div class="cat">motion detail<span>运动细节</span></div>
+        <div class="spec"><div id="b8floor"></div><div id="b8ball"></div></div>
+      </div>
+
+      <!-- 009 · shape morph -->
+      <div class="beat clip" id="b9" data-start="7.2" data-duration="0.9" data-track-index="9" style="color:#0a0a0a">
+        <div class="en">shape morph</div>
+        <div class="w">形状变形</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.30 s × 2</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">power2.inOut</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">7.20 s · 第 9 刀</span></div>
+        </div>
+        <div class="def">一种形状变成另一种</div>
+        <div class="cat">motion detail<span>运动细节</span></div>
+        <div class="spec"><div id="b9shape"></div></div>
+      </div>
+
+      <!-- 010 · parallax -->
+      <div class="beat clip" id="b10" data-start="8.1" data-duration="0.9" data-track-index="10" style="color:#ffffff">
+        <div class="en">parallax</div>
+        <div class="w">视差</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.80 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">power2.out</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">8.10 s · 第 10 刀</span></div>
+        </div>
+        <div class="def">远近图层，速度不同</div>
+        <div class="cat">motion detail<span>运动细节</span></div>
+        <div class="spec"><div id="b10layers"><i></i><i></i><i></i></div></div>
+      </div>
+
+      <!-- 011 · flip -->
+      <div class="beat clip" id="b11" data-start="9" data-duration="0.9" data-track-index="11" style="color:#0a0a0a">
+        <div class="en">flip</div>
+        <div class="w">翻转</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.56 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">power3.inOut</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">9.00 s · 第 11 刀</span></div>
+        </div>
+        <div class="def">翻面，展示另一侧</div>
+        <div class="cat">transition &amp; emphasis<span>转场与强调</span></div>
+        <div class="spec">
+          <div id="b11card" data-layout-allow-overlap><div class="face front">A</div><div class="face back">B</div></div>
+        </div>
+      </div>
+
+      <!-- 012 · light sweep -->
+      <div class="beat clip" id="b12" data-start="9.9" data-duration="0.9" data-track-index="12" style="color:#ffffff">
+        <div class="en">light sweep</div>
+        <div class="w">扫光</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.44 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">power2.inOut</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">9.90 s · 第 12 刀</span></div>
+        </div>
+        <div class="def">一道光掠过表面</div>
+        <div class="cat">transition &amp; emphasis<span>转场与强调</span></div>
+        <div class="spec"><div id="b12panel"><div id="b12band"></div></div></div>
+      </div>
+
+      <!-- 013 · glitch -->
+      <div class="beat clip" id="b13" data-start="10.8" data-duration="0.9" data-track-index="13" style="color:#ffffff">
+        <div class="en">glitch</div>
+        <div class="w">故障效果</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.30 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">steps(1) 6 帧</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">10.80 s · 第 13 刀</span></div>
+        </div>
+        <div class="def">错位与分色</div>
+        <div class="cat">transition &amp; emphasis<span>转场与强调</span></div>
+        <div class="spec">
+          <div id="b13bar" data-layout-allow-overlap><i class="gr"></i><i class="gc"></i></div>
+        </div>
+      </div>
+
+      <!-- 014 · impact shake -->
+      <div class="beat clip" id="b14" data-start="11.7" data-duration="0.9" data-track-index="14" style="color:#ffffff">
+        <div class="en">impact shake</div>
+        <div class="w">冲击震动</div>
+        <div class="specs">
+          <div class="r"><span class="k">时长</span><span class="v">0.18 s</span></div>
+          <div class="r"><span class="k">缓动</span><span class="v">power4.in</span></div>
+          <div class="r"><span class="k">切点</span><span class="v">11.70 s · 第 14 刀</span></div>
+        </div>
+        <div class="def">落物带动整个画面震动</div>
+        <div class="cat">transition &amp; emphasis<span>转场与强调</span></div>
+        <div class="spec"><div id="b14slab"></div></div>
+      </div>
+
+      <!-- end · thesis -->
+      <div class="beat clip" id="bend" data-start="12.6" data-duration="3.2" data-track-index="15">
+        <div class="num" id="bendnum"></div>
+        <div class="fact">个动作，各自有名字</div>
+        <div class="thesis t1" id="bt1">卡住你的不是想象力，</div>
+        <div class="thesis t2" id="bt2">是不知道它<em>叫什么</em>。</div>
+        <div class="credit">motion prompt · 动效词表 · mit</div>
+        <div class="pm-cap" data-layout-ignore>24 of 192 — 24 tiles, one per entry</div>
+        <div id="grid" data-layout-ignore style="--g1: rgba(203,255,0,.8); --g2: rgba(255,255,255,.9)">
+          <div class="grow"><b class="m5"><u>001</u></b><b class="m5"><u>002</u></b><b class="m5"><u>003</u></b><b class="m5"><u>004</u></b><b class="m5"><u>005</u></b><b class="m5"><u>006</u></b></div>
+          <div class="grow"><b class="m3"><u>007</u></b><b class="m3"><u>008</u></b><b class="m3"><u>009</u></b><b class="m3"><u>010</u></b><b class="m3"><u>011</u></b><b class="m3"><u>012</u></b></div>
+          <div class="grow"><b class="m1"><u>013</u></b><b class="m1"><u>014</u></b><b class="m1"><u>015</u></b><b class="m1"><u>016</u></b><b class="m1"><u>017</u></b><b class="m1"><u>018</u></b></div>
+          <div class="grow"><b class="m4"><u>019</u></b><b class="m4"><u>020</u></b><b class="m4"><u>021</u></b><b class="m4"><u>022</u></b><b class="m4"><u>023</u></b><b class="m4"><u>024</u></b></div>
+        </div>
+
+      <div id="flash" data-layout-ignore></div>
+    </div>
+
+    <div id="topbar">
+      <span class="brand">MOTION PROMPT</span>
+      <div id="ticker">
+        <span id="tick-1">001</span><span id="tick-2">002</span><span id="tick-3">003</span><span id="tick-4">004</span><span id="tick-5">005</span><span id="tick-6">006</span><span id="tick-7">007</span><span id="tick-8">008</span><span id="tick-9">009</span><span id="tick-10">010</span><span id="tick-11">011</span><span id="tick-12">012</span><span id="tick-13">013</span><span id="tick-14">014</span><span id="tick-15">015</span><span id="tick-16">016</span><span id="tick-17">017</span><span id="tick-18">018</span><span id="tick-19">019</span><span id="tick-20">020</span><span id="tick-21">021</span><span id="tick-22">022</span><span id="tick-23">023</span><span id="tick-24">024</span>
+      </div>
+      <span class="total">192 ENTRIES</span>
+    </div>
+
+    <div id="bottombar">
+      <div id="track"><div id="fill"></div></div>
+      <div class="lab clip" data-start="0" data-duration="0.9"><span class="n">001 <i>/ 192</i></span><span class="i">01 — 14</span></div>
+      <div class="lab clip" data-start="0.9" data-duration="0.9"><span class="n">002 <i>/ 192</i></span><span class="i">02 — 14</span></div>
+      <div class="lab clip" data-start="1.8" data-duration="0.9"><span class="n">003 <i>/ 192</i></span><span class="i">03 — 14</span></div>
+      <div class="lab clip" data-start="2.7" data-duration="0.9"><span class="n">004 <i>/ 192</i></span><span class="i">04 — 14</span></div>
+      <div class="lab clip" data-start="3.6" data-duration="0.9"><span class="n">005 <i>/ 192</i></span><span class="i">05 — 14</span></div>
+      <div class="lab clip" data-start="4.5" data-duration="0.9"><span class="n">006 <i>/ 192</i></span><span class="i">06 — 14</span></div>
+      <div class="lab clip" data-start="5.4" data-duration="0.9"><span class="n">007 <i>/ 192</i></span><span class="i">07 — 14</span></div>
+      <div class="lab clip" data-start="6.3" data-duration="0.9"><span class="n">011 <i>/ 192</i></span><span class="i">08 — 14</span></div>
+      <div class="lab clip" data-start="7.2" data-duration="0.9"><span class="n">012 <i>/ 192</i></span><span class="i">09 — 14</span></div>
+      <div class="lab clip" data-start="8.1" data-duration="0.9"><span class="n">016 <i>/ 192</i></span><span class="i">10 — 14</span></div>
+      <div class="lab clip" data-start="9" data-duration="0.9"><span class="n">021 <i>/ 192</i></span><span class="i">11 — 14</span></div>
+      <div class="lab clip" data-start="9.9" data-duration="0.9"><span class="n">022 <i>/ 192</i></span><span class="i">12 — 14</span></div>
+      <div class="lab clip" data-start="10.8" data-duration="0.9"><span class="n">023 <i>/ 192</i></span><span class="i">13 — 14</span></div>
+      <div class="lab clip" data-start="11.7" data-duration="0.9"><span class="n">024 <i>/ 192</i></span><span class="i">14 — 14</span></div>
+    </div>
+  </div>
+  <div id="curtain" data-layout-ignore></div>
+
+  <script>
+    const RING = 12;
+    const ring = (radiusAt) =>
+      Array.from({ length: RING }, (_, i) => {
+        const a = (i * Math.PI * 2) / RING + Math.PI / 4;
+        const r = radiusAt(i, a);
+        return [50 + r * Math.cos(a), 50 + r * Math.sin(a)];
+      });
+    const polygonOf = (pts) =>
+      "polygon(" + pts.map(([x, y]) => `${x.toFixed(2)}% ${y.toFixed(2)}%`).join(", ") + ")";
+    const CIRCLE = polygonOf(ring(() => 50));
+    const SQUARE = polygonOf(
+      ring((i, a) => 50 / Math.max(Math.abs(Math.cos(a)), Math.abs(Math.sin(a)))),
+    );
+    const SPARK = polygonOf(ring((i) => (i % 3 === 0 ? 50 : 19)));
+
+    const tl = gsap.timeline({ paused: true });
+
+    /* ground, text colour and specimen colour per cut */
+    const P = [
+      ["#1b31ff", "#ffffff", "#cbff00"],
+      ["#0a0a0a", "#cbff00", "#ffffff"],
+      ["#f3f0e8", "#0a0a0a", "#ff4a12"],
+      ["#ff4a12", "#0a0a0a", "#0a0a0a"],
+      ["#cbff00", "#0a0a0a", "#0a0a0a"],
+      ["#1b31ff", "#ffffff", "#cbff00"],
+      ["#ff2d7a", "#0a0a0a", "#0a0a0a"],
+      ["#0a0a0a", "#ffffff", "#cbff00"],
+      ["#f3f0e8", "#0a0a0a", "#1b31ff"],
+      ["#0a0a0a", "#ffffff", "#cbff00"],
+      ["#cbff00", "#0a0a0a", "#0a0a0a"],
+      ["#0a0a0a", "#ffffff", "#ff4a12"],
+      ["#1b31ff", "#ffffff", "#0a0a0a"],
+      ["#ff2200", "#ffffff", "#ffffff"],
+    ];
+    const MOTIF = [
+      ["rgba(255,255,255,.10)", "rgba(203,255,0,.26)", "rgba(255,255,255,.30)"],
+      ["rgba(203,255,0,.13)", "rgba(255,255,255,.10)", "rgba(255,255,255,.22)"],
+      ["rgba(10,10,10,.075)", "rgba(255,74,18,.26)", "rgba(10,10,10,.18)"],
+      ["rgba(10,10,10,.10)", "rgba(243,240,232,.30)", "rgba(10,10,10,.22)"],
+      ["rgba(10,10,10,.085)", "rgba(27,49,255,.22)", "rgba(10,10,10,.20)"],
+      ["rgba(255,255,255,.10)", "rgba(203,255,0,.26)", "rgba(255,255,255,.30)"],
+      ["rgba(10,10,10,.10)", "rgba(255,255,255,.28)", "rgba(10,10,10,.22)"],
+      ["rgba(203,255,0,.13)", "rgba(255,45,122,.24)", "rgba(255,255,255,.20)"],
+      ["rgba(10,10,10,.075)", "rgba(27,49,255,.22)", "rgba(10,10,10,.18)"],
+      ["rgba(255,255,255,.09)", "rgba(203,255,0,.16)", "rgba(255,255,255,.18)"],
+      ["rgba(10,10,10,.085)", "rgba(255,74,18,.22)", "rgba(10,10,10,.20)"],
+      ["rgba(255,255,255,.08)", "rgba(255,74,18,.22)", "rgba(255,255,255,.18)"],
+      ["rgba(255,255,255,.10)", "rgba(0,229,255,.26)", "rgba(255,255,255,.30)"],
+      ["rgba(255,255,255,.12)", "rgba(10,10,10,.14)", "rgba(255,255,255,.28)"],
+    ];
+    const TICKS = [1, 2, 3, 4, 5, 6, 7, 11, 12, 16, 21, 22, 23, 24];
+    const tset = (sel, props, at) => {
+      const els = gsap.utils.toArray(sel);
+      if (els.length) tl.set(els, props, at);
+    };
+
+    for (let i = 0; i < 14; i++) {
+      const t = i === 0 ? 0.1 : i * 0.9 - 0.04;
+      const [bg, ink, spec] = P[i];
+      const n = i + 1;
+      tset(`#tick-${TICKS[i]}`, { color: "#cbff00", opacity: 1 }, t);
+      tset("#root", { "--m1": MOTIF[i][0], "--m2": MOTIF[i][1], "--m3": MOTIF[i][2] }, t);
+      tl.set("#ground", { backgroundColor: P[i][0] }, t);
+    }
+
+    /* specimen colours that need their own rules */
+    tl.set("#b1sq", { backgroundColor: "#cbff00" }, 0);
+    tl.set("#b2cols i", { backgroundColor: "#ffffff" }, 1.16);
+    tl.set("#b3core", { backgroundColor: "#ff4a12" }, 2.36);
+    tl.set(".ray", { backgroundColor: "#ff4a12" }, 2.36);
+    tl.set("#b4path", { stroke: "#0a0a0a" }, 3.56);
+    tl.set("#b5panel", { backgroundColor: "#ff4a12" }, 4.76);
+    tl.set("#b5inner", { backgroundColor: "#0a0a0a" }, 4.76);
+    tl.set("#b6box", { borderColor: "#ffffff", color: "#ffffff" }, 5.96);
+    tl.set("#b6caret", { backgroundColor: "#ffffff" }, 5.96);
+    tl.set("#b7num", { color: "#ffffff" }, 7.16);
+    tl.set("#b8ball, #b8floor", { backgroundColor: "#cbff00" }, 8.36);
+    tl.set("#b9shape", { backgroundColor: "#1b31ff" }, 9.56);
+    tl.set("#b10layers i", { backgroundColor: "#cbff00" }, 10.76);
+    tl.set("#b10layers i:nth-child(2)", { backgroundColor: "#ffffff", opacity: 0.55 }, 10.76);
+    tl.set("#b10layers i:nth-child(3)", { backgroundColor: "#ffffff", opacity: 0.28 }, 10.76);
+    tl.set("#b11card .front", { backgroundColor: "#0a0a0a", color: "#cbff00" }, 11.96);
+    tl.set("#b11card .back", { backgroundColor: "#ffffff", color: "#0a0a0a" }, 11.96);
+    tl.set("#b12panel", { backgroundColor: "#ff4a12" }, 13.16);
+    tl.set("#b13bar i.gr", { backgroundColor: "#ff2d2d" }, 14.36);
+    tl.set("#b13bar i.gc", { backgroundColor: "#00e5ff" }, 14.36);
+    tl.set("#b14slab", { backgroundColor: "#ffffff" }, 15.56);
+    tl.set("#bend .num, #bend .fact, #bend .thesis", { color: "#ffffff" }, 16.42);
+
+    tl.fromTo("#prow0", { x: -160 }, { x: 0, duration: 20, ease: "none" }, 0);
+    tl.fromTo("#prow1", { x: 0 }, { x: -160, duration: 20, ease: "none" }, 0);
+    tl.fromTo("#prow2", { x: -160 }, { x: 0, duration: 20, ease: "none" }, 0);
+    tl.fromTo("#prow3", { x: 0 }, { x: -160, duration: 20, ease: "none" }, 0);
+    tl.fromTo("#prow4", { x: -160 }, { x: 0, duration: 20, ease: "none" }, 0);
+    tl.fromTo("#prow5", { x: 0 }, { x: -160, duration: 20, ease: "none" }, 0);
+
+    gsap.set("#fill", { scaleX: 0 });
+    tl.to("#fill", { scaleX: 1, duration: 15.8, ease: "none" }, 0);
+
+    /* ── 001 pop-in ── */
+    tl.set("#b1 .en, #b1 .specs, #b1 .def", { opacity: 0 }, 0);
+    tl.fromTo("#b1sq", { scale: 0 }, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.5)" }, 0.12);
+    tl.fromTo("#b1 .w", { y: -330 }, { y: 0, duration: 0.46, ease: "elastic.out(1, 0.6)" }, 0.14);
+    tl.to("#b1 .en", { opacity: 1, duration: 0.18, ease: "none" }, 0.5);
+    tl.to("#b1 .specs", { opacity: 1, duration: 0.2, ease: "none" }, 0.54);
+    tl.to("#b1 .def", { opacity: 0.9, duration: 0.2, ease: "none" }, 0.68);
+    tl.set("#curtain", { opacity: 0 }, 0.12);
+
+    /* ── 002 stagger ── */
+    tl.fromTo("#b2cols i", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "expo.out", stagger: 0.06 }, 1.1);
+    tl.fromTo("#b2 .w", { y: 40 }, { y: 0, duration: 0.32, ease: "expo.out" }, 1.16);
+    tl.fromTo("#b2 .specs", { y: 16 }, { y: 0, duration: 0.3, ease: "power3.out" }, 1.3);
+    tl.fromTo("#b2 .def", { y: 16 }, { y: 0, duration: 0.3, ease: "power3.out" }, 1.3);
+
+    /* ── 003 burst ── */
+    tl.fromTo("#b3core", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(2)" }, 2.28);
+    tl.fromTo(".ray", { scaleY: 0 }, { scaleY: 1, opacity: 1, duration: 0.35, ease: "expo.out", stagger: 0.018 }, 2.34);
+    tl.to(".ray", { opacity: 0, duration: 0.3, ease: "power2.in" }, 2.78);
+    tl.fromTo("#b3 .w", { y: 40 }, { y: 0, duration: 0.3, ease: "expo.out" }, 2.34);
+    tl.fromTo("#b3 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 2.48);
+    tl.fromTo("#b3 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 2.48);
+
+    /* ── 004 line draw ── */
+    const path = document.getElementById("b4path");
+    const len = path.getTotalLength();
+    gsap.set("#b4path", { strokeDasharray: len, strokeDashoffset: len });
+    tl.to("#b4path", { strokeDashoffset: 0, duration: 0.7, ease: "power2.inOut" }, 3.5);
+    tl.fromTo("#b4 .w", { y: 40 }, { y: 0, duration: 0.3, ease: "expo.out" }, 3.56);
+    tl.fromTo("#b4 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 3.7);
+    tl.fromTo("#b4 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 3.7);
+
+    /* ── 005 mask reveal ── */
+    tl.fromTo("#b5panel", { clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.36, ease: "power3.out" }, 4.66);
+    tl.fromTo("#b5inner", { y: 0 }, { y: -360, duration: 0.5, ease: "power4.out" }, 4.72);
+    tl.fromTo("#b5 .w", { y: 40 }, { y: 0, duration: 0.3, ease: "expo.out" }, 4.72);
+    tl.fromTo("#b5 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 4.86);
+    tl.fromTo("#b5 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 4.86);
+
+    /* ── 006 typewriter ── */
+    [0, 1, 2, 3, 4].forEach((i) => {
+      tl.to(`#b6box .tw:nth-child(${i + 1})`, { opacity: 1, duration: 0.01 }, 5.74 + i * 0.09);
+    });
+    tl.set("#b6caret", { opacity: 1 }, 5.72);
+    for (let i = 0; i < 5; i++) tl.set("#b6caret", { opacity: i % 2 === 0 ? 0 : 1 }, 5.94 + i * 0.12);
+    tl.fromTo("#b6 .w", { y: 40 }, { y: 0, duration: 0.3, ease: "expo.out" }, 5.78);
+    tl.fromTo("#b6 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 5.92);
+    tl.fromTo("#b6 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 5.92);
+
+    /* ── 007 count-up ── */
+    const c7 = { v: 0 };
+    const n7 = document.getElementById("b7num");
+    tl.to(
+      c7,
+      {
+        v: 192,
+        duration: 0.72,
+        ease: "expo.out",
+        onUpdate() {
+          n7.textContent = String(Math.round(c7.v)).padStart(3, "0");
+        },
+      },
+      5.26,
+    );
+    tl.fromTo("#b7 .w", { y: 40 }, { y: 0, duration: 0.3, ease: "expo.out" }, 7.12);
+    tl.fromTo("#b7 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 7.26);
+    tl.fromTo("#b7 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 7.26);
+
+    /* ── 008 squash & stretch ── */
+    tl.fromTo("#b8ball", { y: -420, scaleX: 0.9, scaleY: 1.15 }, { y: 0, scaleX: 1, scaleY: 1, duration: 0.26, ease: "power2.in" }, 8.26);
+    tl.to("#b8ball", { scaleX: 1.45, scaleY: 0.55, duration: 0.07, ease: "power2.out" }, 8.52);
+    tl.to("#b8ball", { scaleX: 1, scaleY: 1, duration: 0.3, ease: "elastic.out(1, 0.3)" }, 8.6);
+    tl.fromTo("#b8 .w", { y: 40 }, { y: 0, duration: 0.3, ease: "expo.out" }, 8.32);
+    tl.fromTo("#b8 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 8.46);
+    tl.fromTo("#b8 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 8.46);
+
+    /* ── 009 shape morph ── */
+    tl.set("#b9shape", { clipPath: CIRCLE }, 0);
+    tl.fromTo("#b9shape", { scale: 0.4 }, { scale: 1, opacity: 1, duration: 0.26, ease: "back.out(1.7)" }, 9.44);
+    tl.to("#b9shape", { clipPath: SQUARE, duration: 0.3, ease: "power2.inOut" }, 9.72);
+    tl.to("#b9shape", { clipPath: SPARK, duration: 0.3, ease: "power2.inOut" }, 10.04);
+    tl.fromTo("#b9 .w", { x: -50 }, { x: 0, opacity: 1, duration: 0.3, ease: "expo.out" }, 9.48);
+    tl.fromTo("#b9 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 9.62);
+    tl.fromTo("#b9 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 9.62);
+
+    /* ── 010 parallax ── */
+    tl.fromTo("#b10layers i:nth-child(1)", { x: -520 }, { x: 0, duration: 0.8, ease: "power2.out" }, 10.62);
+    tl.fromTo("#b10layers i:nth-child(2)", { x: -260 }, { x: 0, duration: 0.8, ease: "power2.out" }, 10.62);
+    tl.fromTo("#b10layers i:nth-child(3)", { x: -110 }, { x: 0, duration: 0.8, ease: "power2.out" }, 10.62);
+    tl.fromTo("#b10 .w", { y: 40 }, { y: 0, duration: 0.3, ease: "expo.out" }, 10.68);
+    tl.fromTo("#b10 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 10.82);
+    tl.fromTo("#b10 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 10.82);
+
+    /* ── 011 flip ── */
+    tl.fromTo("#b11card", { rotateY: 0, rotateX: 8 }, { rotateY: 180, rotateX: 0, duration: 0.56, ease: "power3.inOut" }, 11.84);
+    tl.fromTo("#b11 .w", { y: 40 }, { y: 0, duration: 0.3, ease: "expo.out" }, 11.88);
+    tl.fromTo("#b11 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 12.02);
+    tl.fromTo("#b11 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 12.02);
+
+    /* ── 012 light sweep ── */
+    tl.fromTo("#b12panel", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "power3.out" }, 13.04);
+    tl.fromTo("#b12band", { x: 0 }, { x: 720, duration: 0.44, ease: "power2.inOut" }, 13.3);
+    tl.fromTo("#b12 .w", { y: 40 }, { y: 0, duration: 0.3, ease: "expo.out" }, 13.1);
+    tl.fromTo("#b12 .specs", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 13.24);
+    tl.fromTo("#b12 .def", { y: 16 }, { y: 0, duration: 0.28, ease: "power3.out" }, 13.24);
+
+    /* ── 013 glitch ── */
+    const gl = [
+      [14.26, 10, -6, 1],
+      [14.32, -14, 4, 1],
+      [14.38, 6, 0, 0.85],
+      [14.44, -6, -4, 1],
+      [14.5, 12, 2, 0.6],
+      [14.56, 0, 0, 0],
+    ];
+    gl.forEach(([t, x, y, op]) => {
+      tl.set("#b13bar i.gr", { x: x, y, opacity: op }, t);
+      tl.set("#b13bar i.gc", { x: -x, y: -y, opacity: op }, t);
+    });
+    tl.fromTo("#b13 .w", { y: 40 }, { y: 0, duration: 0.28, ease: "expo.out" }, 14.24);
+    tl.fromTo("#b13 .specs", { y: 16 }, { y: 0, duration: 0.26, ease: "power3.out" }, 14.38);
+    tl.fromTo("#b13 .def", { y: 16 }, { y: 0, duration: 0.26, ease: "power3.out" }, 14.38);
+
+    /* ── 014 impact ── */
+    tl.fromTo("#b14slab", { y: -420, scale: 1.2 }, { y: 0, scale: 1, opacity: 1, duration: 0.18, ease: "power4.in" }, 15.46);
+    tl.fromTo("#flash", { opacity: 0 }, { opacity: 0.9, duration: 0.03, ease: "none" }, 11.74);
+    tl.to("#flash", { opacity: 0, duration: 0.22, ease: "power2.out" }, 11.77);
+    [
+      [11.76, 16, -9],
+      [11.82, -12, 7],
+      [11.88, 8, -5],
+      [11.94, -5, 3],
+      [12.0, 0, 0],
+    ].forEach(([t, x, y]) => tl.to("#stage", { x, y, duration: 0.055, ease: "none" }, t));
+    tl.fromTo("#b14 .w", { scale: 1.3 }, { scale: 1, opacity: 1, duration: 0.24, ease: "power4.in" }, 15.48);
+    tl.fromTo("#b14 .specs", { y: 16 }, { y: 0, duration: 0.26, ease: "power3.out" }, 15.68);
+    tl.fromTo("#b14 .def", { y: 16 }, { y: 0, duration: 0.26, ease: "power3.out" }, 15.68);
+
+    /* ── end card ── */
+    const cE = { v: 0 };
+    const nE = document.getElementById("bendnum");
+    tl.to(
+      cE,
+      {
+        v: 192,
+        duration: 0.85,
+        ease: "expo.out",
+        onUpdate() {
+          nE.textContent = String(Math.round(cE.v));
+        },
+      },
+      12.62,
+    );
+    tl.fromTo("#bend .fact", { y: 22 }, { y: 0, opacity: 0.66, duration: 0.32, ease: "expo.out" }, 16.9);
+    tl.fromTo("#bt1", { yPercent: 115 }, { yPercent: 0, duration: 0.4, ease: "power4.out" }, 17.12);
+    tl.fromTo("#bt2", { yPercent: 115 }, { yPercent: 0, duration: 0.4, ease: "power4.out" }, 17.26);
+    tl.fromTo("#bend .credit", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 17.7);
+
+    tl.set("#ground", { backgroundColor: "#0a0a0a" }, 12.86);
+    tl.set("#grid", { "--g1": "rgba(203,255,0,.8)", "--g2": "rgba(255,255,255,.9)" }, 16.4);
+    tl.fromTo("#grid b", { scale: 0.4 }, { scale: 1, duration: 0.34, ease: "back.out(2)", stagger: 0.012 }, 16.82);
+    /* 14 cuts at 0.9 s instead of 1.2 s: pull each beat's tweens into its new slot.
+       Durations and eases are untouched — only the absolute start times move. */
+    const SHIFT = 0.3, ENDSHIFT = 13 * SHIFT;
+    tl.getChildren(false, true, true).forEach((c) => {
+      const tgt = c.targets ? c.targets()[0] : null;
+      if (!tgt || !tgt.closest) return;
+      const beat = tgt.closest(".beat");
+      const id = beat ? beat.id : "";
+      if (id === "bend") {
+        c.startTime(Math.max(0, c.startTime() - ENDSHIFT));
+      } else if (id === "b14") {
+        c.startTime(Math.max(0, c.startTime() - ENDSHIFT));
+      } else if (id && id.charAt(0) === "b" && !isNaN(+id.slice(1))) {
+        const n = +id.slice(1) - 1;
+        if (n > 0) c.startTime(Math.max(0, c.startTime() - n * SHIFT));
+      }
+    });
+
+    window.__timelines["sheet"] = tl;
+  </script>
+</template>
