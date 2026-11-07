@@ -1,15 +1,15 @@
 ---
 name: motion-lexicon-reel
 description: >-
-  Make a 15-second, high-saturation, fast-cut "motion lexicon" reel in code:
-  14 named motion moves, each demonstrated on a geometric specimen while the
-  card names it (Chinese + English), a Swiss 12-column layout with one entry
-  column and one specimen column, a drifting motif field, a player-style HUD,
-  three real spec rows per entry (duration / easing / cut point), and a
-  24-tile index wall on the end card. HTML + GSAP on HyperFrames; no video
-  model, no footage, no API key. Use for design-system teasers, "N things in
-  15 seconds" posts, motion-vocabulary explainers, showreel title sequences,
-  and catalogue / specimen films. Do not use for narrative films, live action,
+  Make a 15-second reel whose whole argument is that a motion has to have a
+  name before anyone can make it: 14 named moves, each demonstrated on a
+  geometric object while the card names it (Chinese + English) and lists three
+  real spec rows (duration / easing / cut point), on a Swiss 12-column grid,
+  over a drifting motif field, in a player-style HUD, with a 24-tile index wall
+  on the end card. HTML + GSAP on HyperFrames; no video model, no footage, no
+  API key. Use when the point is vocabulary — design-system teasers, "you can
+  only build what you can name" posts, motion-vocabulary explainers, component
+  showreels, course chapter cards. Do not use for narrative films, live action,
   or anything that needs a person on screen.
 ---
 

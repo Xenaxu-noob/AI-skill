@@ -69,14 +69,16 @@ MIT — see [LICENSE](LICENSE).
 
 ### [motion-lexicon-reel](motion-lexicon-reel/)
 
-Turn a vocabulary into a **15-second, code-rendered specimen reel**: 14 named motion moves, each demonstrated on a geometric object while the card names it — Swiss grid, a drifting motif field, a player-style HUD, three real spec rows per entry, and a 24-tile index wall on the end card.
+**卡住你的不是想象力，是不知道它叫什么。**
+
+A 15-second reel that argues one thing: a motion has to have a **name** before anyone can make it. 14 named moves, each demonstrated on a geometric object while the card names it — so the viewer leaves with 14 working words instead of 14 definitions. Swiss 12-column grid, a drifting motif field, three real spec rows per entry, a player-style HUD, and a 24-tile index wall on the end card.
 
 ![motion-lexicon-reel cover](motion-lexicon-reel/cover_16x9.jpg)
 
 **Use it for**
 
 - Design-system and motion-vocabulary teasers (easing, stagger, morph, glitch)
-- "N things in N seconds" social posts and channel bumpers
+- "You can only build what you can name" posts and channel bumpers
 - Component / icon / pattern library showreels
 - Teaching design fundamentals, editing grammar, camera language
 - Conference openers, proposal warm-ups, course chapter cards
