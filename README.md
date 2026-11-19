@@ -4,6 +4,10 @@ A collection of reusable AI skills — packaged instructions, templates, and pro
 
 ## Skills
 
+### [Christmas Botanical Invitations](christmas-botanical-invitations/)
+
+Four botanical Christmas invitation layouts on warm-white paper. Choose a layout, add event details, and export a 10-second MP4 with a full-screen foliage reveal and optional music. [Watch the four-layout preview](christmas-botanical-invitations/preview/preview.mp4).
+
 ### [Christmas Letterpress Invitations](midcentury-xmas-card/)
 
 Five vintage letterpress layouts for customizable, wax-sealed Christmas invitation MP4s. [Watch the 6.5-second preview](midcentury-xmas-card/preview/preview.mp4).

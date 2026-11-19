@@ -1,0 +1,49 @@
+{
+  "slug": "christmas-botanical-invitations",
+  "title": "Christmas Botanical Invitations · 圣诞植物动态邀请函",
+  "form": "film-template",
+  "usage": [
+    "direct"
+  ],
+  "kind": "video",
+  "intents": [
+    "圣诞植物邀请函",
+    "圣诞市集邀请函",
+    "圣诞邀请卡动效",
+    "暖白纸感请柬",
+    "电子邀请函 MP4",
+    "Christmas invitation video",
+    "botanical Christmas invitation",
+    "Christmas market invitation",
+    "evergreen invitation card",
+    "winter event invitation",
+    "botanical camera reveal",
+    "portrait invitation video"
+  ],
+  "tags": [
+    "christmas",
+    "botanical",
+    "invitation",
+    "video"
+  ],
+  "outputs": {
+    "aspect": [
+      "4:5"
+    ],
+    "seconds": [
+      10,
+      10
+    ],
+    "fps": 24
+  },
+  "cost": "free",
+  "runtime": {
+    "minTier": "A",
+    "checked": "2026-11-19"
+  },
+  "copyPrompt": "使用 Christmas Botanical Invitations 技能制作手机可播放的 MP4。先选择一款植物版式并提供活动名称、日期时间和地点。",
+  "sourceTerms": [
+    "Birch Courtyard",
+    "Dec 19 · 11 AM–6 PM"
+  ]
+}

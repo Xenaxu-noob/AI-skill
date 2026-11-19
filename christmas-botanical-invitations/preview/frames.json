@@ -1,0 +1,17 @@
+[
+  {
+    "t": 0,
+    "file": "opening.jpg",
+    "expect": "四款满屏植物特写与片头"
+  },
+  {
+    "t": 2.5,
+    "file": "reveal.jpg",
+    "expect": "灰绿背景上的完整纸卡与标题"
+  },
+  {
+    "t": 4.8,
+    "file": "poster.png",
+    "expect": "完整活动文案"
+  }
+]

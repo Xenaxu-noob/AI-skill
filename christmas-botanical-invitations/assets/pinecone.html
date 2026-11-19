@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Christmas Market Invitation</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; }
+.stage { position: relative; width: 720px; height: 900px; overflow: hidden; background: #f9f7f4; }
+.stage { background: radial-gradient(ellipse at 29% 12%, #e6e6d9, #c2cabb); }
+.card { position: absolute; left: 65px; top: 76px; width: 590px; height: 737px;
+  overflow: hidden; color: #13321f; font-family: Georgia, serif; transform-origin: 28% 88%;
+  border: 1px solid #fffdf9; border-radius: 2px;
+  box-shadow: 1px 2px 0 #d3ccc0, 4px 8px 10px #40443330, 9px 25px 42px #353b3840; }
+.card::after { opacity: var(--frame-opacity, 1); content: ''; position: absolute; inset: 14px; pointer-events: none;
+  border: 1px solid #17382531; }
+.kicker { position: absolute; top: 15%; left: 9%; font: 600 12px Georgia, serif;
+  letter-spacing: .21em; }
+.art { position: absolute; inset: 0; background: url(pinecone.png) center / cover; transform-origin: 100% 100%; }
+h1 { position: absolute; left: 8.7%; top: 21.5%; width: 82%; margin: 0;
+  font-size: 70px; font-weight: 500; letter-spacing: -.056em; line-height: .96; white-space: pre-line; }
+.details { position: absolute; top: 47%; left: 8.8%; width: 62%; display: grid; gap: 29px;
+  font-size: 27px; line-height: 1.16; }
+p { margin: 0; }
+.spark { position: absolute; width: 13px; height: 13px; background: #fff7d7;
+  clip-path: polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%); }
+
+.art { background-image: url(pinecone.png); }
+.kicker { top: 14%; }
+h1 { top: 20%; font-size: 72px; }
+.details { top: 44%; left: auto; right: 9%; width: 62%; text-align: right;
+  justify-items: end; gap: 13px; font-size: 25px; }
+.details::before { content: ''; width: 35px; border-top: 1px solid #395b4580; margin-bottom: 6px; }
+
+.intro-caption { position: absolute; z-index: 2; left: 50%; bottom: 10%; transform: translateX(-50%);
+  padding: 16px 25px 17px; border: 1px solid #fffdf8; box-shadow: 0 4px 18px #1b30232b;
+  background: #f8f4eaf5; color: #173923; font: 23px Georgia, serif;
+  letter-spacing: .045em; white-space: nowrap; }
+</style>
+<main class="stage">
+  <article class="card">
+    <div class="art"></div>
+    <i class="spark" style="left:28%;top:89%"></i>
+    <i class="spark" style="left:62%;top:92%"></i>
+    <i class="spark" style="left:28%;top:89%"></i>
+    <i class="spark" style="left:62%;top:92%"></i>
+    <div class="kicker"></div>
+    <h1 id="title"></h1>
+    <div class="details"><p id="hours"></p><p id="venue"></p><p id="entry"></p></div>
+  </article>
+  <div class="intro-caption"></div>
+</main>
+<script>
+window.setCopy = (copy) => {
+  document.querySelector('.intro-caption').textContent = copy.intro;
+  document.querySelector('.intro-caption').hidden = !copy.intro;
+  document.querySelector('.kicker').textContent = copy.kicker;
+  document.querySelectorAll('.details p').forEach(node => node.hidden = !copy[node.id]);
+  for (const field of ['title', 'hours', 'venue', 'entry']) {
+    document.getElementById(field).textContent = copy[field] || '';
+  }
+  const title = document.querySelector('h1');
+  const details = document.querySelector('.details');
+  const fits = () => title.scrollWidth <= title.clientWidth && title.offsetHeight <= 176;
+  for (let size = parseFloat(getComputedStyle(title).fontSize); !fits() && size > 38; size--) title.style.fontSize = (size - 1) + 'px';
+  if (!fits()) throw Error('Title exceeds the text area');
+  const rowsFit = () => details.offsetHeight <= 225 && details.scrollWidth <= details.clientWidth;
+  for (let size = parseFloat(getComputedStyle(details).fontSize); !rowsFit() && size > 18; size--) details.style.fontSize = (size - 1) + 'px';
+  if (!rowsFit()) throw Error('Details exceed the text area');
+};
+const card = document.querySelector('.card');
+const art = document.querySelector('.art');
+const texts = [...document.querySelectorAll('h1, .details p')];
+const sparks = [...document.querySelectorAll('.spark')];
+function progress(time, start, end) {
+  const fraction = Math.max(0, Math.min(1, (time - start) / (end - start)));
+  return fraction * fraction * (3 - 2 * fraction);
+}
+window.frame = (time) => {
+  const retreat = progress(time, .35, 2.26);
+  document.querySelector('.intro-caption').style.opacity = 1 - progress(time, .48, 1.18);
+  const zoom = 1 + 3.70 * (1 - retreat);
+  card.style.transformOrigin = '177px 625px';
+  card.style.transform = 'translate(' + (118 * (1 - retreat)) + 'px,' +
+    (-251 * (1 - retreat)) + 'px) scale(' + zoom + ')';
+  card.style.setProperty('--frame-opacity', progress(time, .8, 2.16));
+  document.querySelector('.kicker').style.opacity = progress(time, 1.77, 2.20);
+  const breeze = Math.sin(time * 2.4) * .5 + .5;
+  art.style.transform = 'scale(' + (1 + breeze * .006) + ')';
+  const starts = [1.98, 2.86, 3.41, 3.96];
+  texts.forEach((node, index) => {
+    const amount = progress(time, starts[index], starts[index] + .55);
+    node.style.opacity = amount;
+    node.style.transform = 'translateY(' + 12 * (1 - amount) + 'px)';
+  });
+  sparks.forEach((node, index) => {
+    const times = [.90, 2.54, 4.12, 6.2];
+    const start = times[index];
+    const light = progress(time, start, start + .35) * (1 - progress(time, start + .35, start + .85));
+    node.style.opacity = light * .67;
+    node.style.transform = 'scale(' + (.35 + light * .65) + ')';
+  });
+};
+</script>
+</html>
