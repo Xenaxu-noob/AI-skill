@@ -1,0 +1,49 @@
+{
+  "slug": "candlelit-christmas-invitations",
+  "title": "Candlelit Christmas Invitations · 烛光晚宴邀请函",
+  "form": "film-template",
+  "usage": [
+    "direct"
+  ],
+  "kind": "video",
+  "intents": [
+    "烛光晚宴邀请函",
+    "圣诞晚宴邀请卡",
+    "午夜蓝动态请柬",
+    "正式晚宴邀请视频",
+    "手机邀请函 MP4",
+    "candlelit Christmas invitation",
+    "formal dinner invitation",
+    "Christmas dinner invite video",
+    "navy and gold invitation",
+    "candlelight reveal animation",
+    "elegant Christmas invitation",
+    "winter supper invitation"
+  ],
+  "tags": [
+    "christmas",
+    "candlelight",
+    "dinner",
+    "invitation"
+  ],
+  "outputs": {
+    "aspect": [
+      "4:5"
+    ],
+    "seconds": [
+      10,
+      10
+    ],
+    "fps": 24
+  },
+  "cost": "free",
+  "runtime": {
+    "minTier": "A",
+    "checked": "2026-11-19"
+  },
+  "copyPrompt": "用 Candlelit Christmas Invitations 制作烛光晚宴 MP4 邀请函。先让我选择六款中的版式，再询问活动名称、时间、地点和 RSVP。",
+  "sourceTerms": [
+    "The Lantern Room",
+    "Dec 20 · 7 PM"
+  ]
+}

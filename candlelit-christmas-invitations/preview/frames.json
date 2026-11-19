@@ -1,0 +1,17 @@
+[
+  {
+    "t": 0.85,
+    "file": "opening.jpg",
+    "expect": "固定机位暖光开始照出餐位"
+  },
+  {
+    "t": 2.7,
+    "file": "reveal.jpg",
+    "expect": "整卡显现，标题逐渐亮起"
+  },
+  {
+    "t": 5,
+    "file": "poster.png",
+    "expect": "六款活动文字独立可读"
+  }
+]

@@ -1,0 +1,142 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>A Candlelit Christmas</title>
+<style>body{margin:0;background:#131c29}canvas{display:block}</style>
+<canvas width="720" height="900"></canvas>
+<script>
+const image = new Image();
+image.src = window.candlelitArtwork;
+const canvas = document.querySelector('canvas');
+const context = canvas.getContext('2d');
+const paper = document.createElement('canvas');
+paper.width = 1122;
+paper.height = 1402;
+const paperContext = paper.getContext('2d');
+const design = window.candlelitDesign;
+const { zones } = design;
+function ease(time, from, to) {
+  const x = Math.min(1, Math.max(0, (time - from) / (to - from)));
+  return x * x * (3 - 2 * x);
+}
+window.ready = image.decode().then(() => {
+  if (Math.abs(image.width / image.height - .8) > .015) throw Error('Artwork must be portrait 4:5');
+  paperContext.drawImage(image, 0, 0, 1122, 1402);
+  if (window.invitation.custom) return;
+  const [sampleX, sampleY, sampleWidth, sampleHeight] = design.texture;
+  const texture = paperContext.getImageData(sampleX, sampleY, sampleWidth, sampleHeight).data;
+  const mirror = (offset, size) => {
+    const cycle = offset % (size * 2);
+    return cycle < size ? cycle : 2 * size - 1 - cycle;
+  };
+  for (const [x, y, w, h] of zones) {
+    const patch = paperContext.getImageData(x, y, w, h);
+    for (let row = 0; row < h; row++) {
+      for (let col = 0; col < w; col++) {
+        const idx = (row * w + col) * 4;
+        const sample = (mirror(row + y, sampleHeight) * sampleWidth +
+          mirror(col + x, sampleWidth)) * 4;
+        const weight = Math.min(1, Math.min(col, row, w - 1 - col, h - 1 - row) / 13);
+        for (let channel = 0; channel < 3; channel++) {
+          patch.data[idx + channel] = patch.data[idx + channel] * (1 - weight) + texture[sample + channel] * weight;
+        }
+      }
+    }
+    paperContext.putImageData(patch, x, y);
+  }
+});
+function glow(x,y,radius,color,strength) {
+  const halo = context.createRadialGradient(x,y,0,x,y,radius);
+  halo.addColorStop(0,color);
+  halo.addColorStop(1,'#ffb86500');
+  context.globalAlpha = strength;
+  context.fillStyle = halo;
+  context.fillRect(x-radius,y-radius,2*radius,2*radius);
+  context.globalAlpha = 1;
+}
+
+const scene = document.createElement('canvas');
+scene.width = 1122;
+scene.height = 1402;
+const sceneContext = scene.getContext('2d');
+const reveals = [2.41, 2.55, 3.22, 3.74, 4.26];
+function fitRows() {
+  const used = [];
+  return window.invitation.copy.map((value,index) => {
+    if (!value) return null;
+    const [x,y,width,initial,align,italic] = design.boxes[index];
+    const lines = value.split('\n');
+    if (lines.length > (index === 1 ? 2 : 1)) throw Error('Too many lines in field ' + (index + 1));
+    let size = initial;
+    const fontAt = px => (italic ? 'italic ' : '') + px + 'px Georgia, Times New Roman, serif';
+    sceneContext.font = fontAt(size);
+    while (lines.some(line => sceneContext.measureText(line).width > width) && size > 24) {
+      size -= 1;
+      sceneContext.font = fontAt(size);
+    }
+    const metrics = lines.map(line => sceneContext.measureText(line));
+    const bounds = metrics.map((metric,index) => {
+      const baseline = y + index * size * .90;
+      const l = align === 'center' ? x - metric.width/2 : x;
+      const r = l + metric.width;
+      const top = baseline - metric.actualBoundingBoxAscent;
+      const bottom = baseline + metric.actualBoundingBoxDescent;
+      if (l < 40 || r > 1082 || top < 40 || bottom > 1362 || metric.width > width) {
+        throw Error('Text exceeds its layout area: ' + value);
+      }
+      if (used.some(box => l < box.r && r > box.l && top < box.bottom && bottom > box.top)) {
+        throw Error('Text overlaps another field: ' + value);
+      }
+      return {l,r,top,bottom};
+    });
+    used.push(...bounds);
+    return { x,y,align,lines,size,font:fontAt(size) };
+  });
+}
+let fitted = null;
+window.frame = time => {
+  sceneContext.globalAlpha = 1;
+  sceneContext.drawImage(paper, 0, 0);
+  if (window.invitation.reference) {
+    for (const [x,y,w,h,start] of zones) {
+      sceneContext.globalAlpha = ease(time,start,start+.43);
+      sceneContext.drawImage(image,x*image.width/1122,y*image.height/1402,
+        w*image.width/1122,h*image.height/1402,x,y,w,h);
+    }
+  } else {
+    fitted ??= fitRows();
+    fitted.forEach((field,index) => {
+      if (!field) return;
+      sceneContext.globalAlpha = ease(time,reveals[index],reveals[index]+.43);
+      sceneContext.font = field.font;
+      sceneContext.textAlign = field.align;
+      sceneContext.fillStyle = index === 2 || index === 3 ? '#fff4e3' : '#f8e6cd';
+      field.lines.forEach((line,row) => sceneContext.fillText(line,field.x,field.y+row*field.size*.90));
+    });
+  }
+  sceneContext.globalAlpha = 1;
+
+  const arrival = ease(time, .16, 2.67);
+  const settle = ease(time, 1.45, 2.98);
+  const flicker = .80 + .10 * Math.sin(time * 6.1) + .08 * Math.sin(time * 10.8 + .7);
+  const [lightX, lightY] = design.light;
+  const light = sceneContext.createRadialGradient(lightX,lightY,35,lightX,lightY,180 + 1350 * arrival);
+  light.addColorStop(0, 'rgba(6,10,19,' + (1 - arrival) * .86 + ')');
+  light.addColorStop(.48, 'rgba(6,10,19,' + (1 - arrival) * .96 + ')');
+  light.addColorStop(1, 'rgba(6,10,19,' + (1 - settle) * .99 + ')');
+  sceneContext.fillStyle = light;
+  sceneContext.fillRect(0,0,1122,1402);
+
+  context.setTransform(720/1122,0,0,900/1402,0,0);
+  context.drawImage(scene,0,0);
+  context.globalCompositeOperation = 'screen';
+  const warmth = ease(time,.04,.92) * (1 - .73 * settle);
+  glow(lightX,lightY,265 + 525 * arrival,'#d88e3d34', warmth * flicker);
+  glow(lightX - 130,lightY + 105,220 + 515 * arrival,'#e4a35212',warmth);
+  const glass = ease(time,1.30,2.47);
+  const [x1, y1, x2, y2] = design.reflect;
+  glow(x1+(x2-x1)*glass,y1+(y2-y1)*glass,37,'#ffd8a669',Math.sin(Math.PI*glass)*.57);
+  for (const [x,y] of design.flames) glow(x,y,65,'#ffad592a',arrival*flicker);
+  context.globalCompositeOperation = 'source-over';
+  context.resetTransform();
+};
+</script>

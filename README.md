@@ -4,6 +4,10 @@ A collection of reusable AI skills — packaged instructions, templates, and pro
 
 ## Skills
 
+### [Candlelit Christmas Invitations](candlelit-christmas-invitations/)
+
+Six editable midnight-blue dinner invitations with a fixed-camera candlelight reveal and optional Chopin accompaniment. [Watch the six-layout preview](candlelit-christmas-invitations/preview/preview.mp4).
+
 ### [Christmas Botanical Invitations](christmas-botanical-invitations/)
 
 Four botanical Christmas invitation layouts on warm-white paper. Choose a layout, add event details, and export a 10-second MP4 with a full-screen foliage reveal and optional music. [Watch the four-layout preview](christmas-botanical-invitations/preview/preview.mp4).
