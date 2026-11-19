@@ -1,0 +1,50 @@
+{
+  "slug": "midcentury-xmas-card",
+  "title": "Christmas Letterpress Invitations · 圣诞复古凸版动态邀请函",
+  "form": "film-template",
+  "usage": [
+    "direct"
+  ],
+  "kind": "video",
+  "intents": [
+    "圣诞动态邀请函",
+    "Christmas invitation video",
+    "电子邀请函 MP4",
+    "wax seal invitation",
+    "复古派对邀请函",
+    "letterpress invitation",
+    "棉纸开信动画",
+    "envelope opening animation",
+    "圣诞派对视频邀请",
+    "winter event invitation",
+    "竖版邀请视频",
+    "vintage invitation MP4"
+  ],
+  "tags": [
+    "christmas",
+    "invitation",
+    "letterpress",
+    "video"
+  ],
+  "outputs": {
+    "aspect": [
+      "4:5"
+    ],
+    "seconds": [
+      8.67,
+      16.67
+    ],
+    "fps": 24
+  },
+  "cost": "free",
+  "runtime": {
+    "minTier": "A",
+    "checked": "2026-11-19"
+  },
+  "copyPrompt": "用 Solgrid 上的 Christmas Letterpress Invitations（slug: midcentury-xmas-card，solgrid skills download -s midcentury-xmas-card）制作 MP4 邀请函。先读 SKILL.md，一次问齐版式与缺失的活动文案，再按适配指南渲染。",
+  "sourceTerms": [
+    "The Neighborhood Living Room",
+    "Dec 24 · 7:30 PM",
+    "Bring a snack · RSVP by message"
+  ]
+}

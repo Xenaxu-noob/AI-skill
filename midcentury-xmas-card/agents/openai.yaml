@@ -1,0 +1,4 @@
+interface:
+  display_name: "Christmas Letterpress Invitations"
+  short_description: "Create a vintage wax-seal Christmas invitation video."
+  default_prompt: "Use $midcentury-xmas-card to make a vintage winter invitation MP4. Ask which layout and collect the missing event copy."

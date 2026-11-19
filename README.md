@@ -4,6 +4,10 @@ A collection of reusable AI skills — packaged instructions, templates, and pro
 
 ## Skills
 
+### [Christmas Letterpress Invitations](midcentury-xmas-card/)
+
+Five vintage letterpress layouts for customizable, wax-sealed Christmas invitation MP4s. [Watch the 6.5-second preview](midcentury-xmas-card/preview/preview.mp4).
+
 ### [ai-explainer-video](ai-explainer-video/)
 
 Turn a complex idea into a **60–90 second narrated explainer**: flat-vector characters over AI-generated background plates, with script, storyboard, voiceover, captions, SFX, QA, and 16:9 / 9:16 cutdowns.
