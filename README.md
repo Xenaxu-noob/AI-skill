@@ -99,3 +99,43 @@ motion-lexicon-reel/
 ```
 
 **Output spec** — 1920×1080 · 30 fps · 15.8 s · H.264 + AAC · −15.6 LUFS · no model calls, no stock footage.
+
+### [midcentury-xmas-card](midcentury-xmas-card/)
+
+**雪夜木屋 · 中叶现代主义圣诞贺卡。**
+
+A 15-second portrait e-card in 1950s mid-century-modern flat geometry. A small envelope opens, the card grows to full screen, and the A-Frame cabin builds itself out of the snow line — starbursts pop, pines rise, the roof mass grows as one cut-paper shape, windows warm up, smoke draws, a trail of footprints walks to the door. Half a turn later the photo is **shattered into 25 irregular pieces that fly in and reassemble** inside an arched window, the letter wipes in line by line, and a heart jumps out of the kiss and settles into a wax seal.
+
+![midcentury-xmas-card cover](midcentury-xmas-card/cover_16x9.jpg)
+
+**Use it for**
+
+- Christmas / New Year e-cards sent as a 15-second vertical clip
+- Couple or family cards built from one photo
+- Brand holiday greetings, client thank-yous, year-end touches
+- Social posts that need a physical-object feel (a real card on a real table)
+
+**Package contents**
+
+```text
+midcentury-xmas-card/
+  SKILL.md                     # contract, timeline, swap points, the three gotchas
+  UPLOAD.md                    # title / description / tags for the skill platform
+  cover_16x9.jpg               # 1920x1080 cover
+  cover_16x9_1280.jpg          # 1280x720 cover
+  preview/
+    midcentury-xmas-card.mp4   # 15 s preview (720x1280)
+    poster.jpg                 # back face, 1080x1920
+  references/
+    style-bible.md             # palette, type, geometry, motion tone
+    cover-spec.md              # cover SVG coordinates, six structural fixes, build order
+    shard-recipe.md            # the 25-shard jittered grid + GSAP SVG pitfalls
+    qa-checklist.md            # pre-delivery checks
+  template/
+    index.html                 # the whole film: cover SVG, back layout, GSAP timeline
+    render.mjs                 # Chrome frame stepping + ffmpeg
+    check.mjs                  # key-frame spot checks
+    assets/                    # fonts, paper grain, BGM + SFX, arch-window photo
+```
+
+**Output spec** — 1080×1920 · 30 fps · 15.0 s · H.264 + AAC · −18.8 dB mean / −2.2 dB peak · pure code render, no model calls.

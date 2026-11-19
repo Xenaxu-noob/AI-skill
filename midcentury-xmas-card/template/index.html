@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mid-Century Christmas — A Cabin in the Snow</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:'Fraunces';src:url('assets/fonts/Fraunces-normal-400.ttf') format('truetype');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:'Fraunces';src:url('assets/fonts/Fraunces-normal-500.ttf') format('truetype');font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:'Fraunces';src:url('assets/fonts/Fraunces-italic-400.ttf') format('truetype');font-weight:400;font-style:italic;font-display:block}
+@font-face{font-family:'Fraunces';src:url('assets/fonts/Fraunces-italic-500.ttf') format('truetype');font-weight:500;font-style:italic;font-display:block}
+@font-face{font-family:'Jost';src:url('assets/fonts/Jost-normal-300.ttf') format('truetype');font-weight:300;font-style:normal;font-display:block}
+@font-face{font-family:'Jost';src:url('assets/fonts/Jost-normal-400.ttf') format('truetype');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:'Jost';src:url('assets/fonts/Jost-normal-500.ttf') format('truetype');font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:'Jost';src:url('assets/fonts/Jost-normal-600.ttf') format('truetype');font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:'Caveat';src:url('assets/fonts/Caveat-400.ttf') format('truetype');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:'Caveat';src:url('assets/fonts/Caveat-500.ttf') format('truetype');font-weight:500;font-style:normal;font-display:block}
+
+:root{
+  --cream:#F4ECDE; --paper:#FBF4E6; --navy:#1B2D36; --ink:#24211C;
+  --teal:#255C5B; --mustard:#D6A12B; --terra:#BC4A2E; --olive:#4E5523;
+  --accent:#255C5B; --muted:#837A69; --line:#DCCDB6;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#173B3C}
+#root{
+  position:relative;width:1080px;height:1920px;overflow:hidden;
+  background:
+    radial-gradient(900px 700px at 16% 8%, rgba(214,161,43,.18) 0%, rgba(214,161,43,0) 68%),
+    radial-gradient(1000px 800px at 86% 92%, rgba(188,74,46,.18) 0%, rgba(188,74,46,0) 66%),
+    #173B3C;
+  display:flex;align-items:center;justify-content:center;
+}
+.stage-bg{position:absolute;inset:0;overflow:hidden}
+.stage-bg .sun{position:absolute;left:-160px;top:-90px;width:700px;height:700px;border-radius:50%;background:var(--mustard);opacity:.16}
+.stage-bg .arch{position:absolute;left:50%;bottom:-280px;width:1500px;height:1250px;margin-left:-750px;border-radius:50% 50% 0 0;border:1px solid rgba(244,236,222,.16)}
+.stage-bg .arch2{position:absolute;left:50%;bottom:-180px;width:1180px;height:1030px;margin-left:-590px;border-radius:50% 50% 0 0;border:1px solid rgba(244,236,222,.10)}
+.stage-bg .dots{position:absolute;right:70px;top:150px;width:180px;height:240px;background-image:radial-gradient(circle,rgba(244,236,222,.32) 2px,transparent 2.6px);background-size:30px 30px;opacity:.7}
+.stage-bg .grain{position:absolute;inset:0;background:url('assets/grain.png') center/cover;opacity:.18;mix-blend-mode:overlay}
+#frame{position:relative;width:1032px;height:1848px;perspective:3000px}
+#scaler{position:absolute;left:0;top:7px;width:1080px;height:1920px;transform-origin:top left;transform:scale(.95556)}
+#card{position:relative;width:1080px;height:1920px;transform-style:preserve-3d;will-change:transform}
+.face{position:absolute;inset:0;overflow:hidden;background:var(--cream);backface-visibility:hidden;box-shadow:0 32px 60px rgba(0,0,0,.32)}
+.front{z-index:2}.back{z-index:1;opacity:0}
+.envelope{position:absolute;left:300px;top:640px;width:480px;height:640px;z-index:20;transform-origin:50% 50%;
+  filter:drop-shadow(0 26px 40px rgba(0,0,0,.38))}
+.env-back{position:absolute;inset:0;background:#F4EBD9;border:1px solid #C9B79A}
+.env-front{position:absolute;left:0;top:150px;width:480px;height:490px;background:#F4EBD9;z-index:3;
+  clip-path:polygon(0 0,50% 34%,100% 0,100% 100%,0 100%);box-shadow:inset 0 0 0 1px rgba(78,85,35,.18)}
+.env-flap{position:absolute;left:0;top:0;width:480px;height:200px;background:#F4EBD9;z-index:4;
+  clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:50% 0;display:flex;justify-content:center;align-items:flex-start;padding-top:48px;
+  font-family:Caveat,cursive;font-size:32px;line-height:1;color:var(--navy);box-shadow:inset 0 0 0 1px rgba(78,85,35,.16)}
+.env-flap span{transform:rotate(-3deg);display:block}
+.env-ribbon{position:absolute;left:238px;top:0;width:4px;height:640px;background:#B08A2E;opacity:.9;z-index:5}
+.env-fold{position:absolute;left:0;top:0;width:480px;height:640px;z-index:4;pointer-events:none}
+#envSeal{position:absolute;left:195px;top:275px;width:90px;height:90px;z-index:6;filter:drop-shadow(0 8px 12px rgba(27,45,54,.28))}
+#envSeal .seal-half svg{width:90px;height:90px;display:block}
+#envSeal path{fill:var(--terra);stroke:var(--paper);stroke-width:2.4;stroke-linejoin:round}
+.seal-half{position:absolute;inset:0}
+.seal-l{clip-path:inset(0 50% 0 0)}
+.seal-r{clip-path:inset(0 0 0 50%)}
+.grain-tex{position:absolute;inset:0;background:url('assets/grain.png') center/cover;opacity:.18;mix-blend-mode:multiply;pointer-events:none;z-index:70}
+
+/* ---------- front: art 1200 + title 720 ---------- */
+.front-art{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:#4E5523}
+.cover{position:absolute;inset:0;width:1080px;height:1920px;display:none}
+.cover.is-active{display:block}
+.cover-wreath{display:block;width:1080px;height:1920px}
+#coverStars use{transform-box:fill-box;transform-origin:50% 50%}
+#coverWreath{transform-box:fill-box;transform-origin:50% 52%}
+#coverFlame{transform-box:fill-box;transform-origin:50% 100%}
+#coverMerry,#coverChristmas{transform-box:fill-box;transform-origin:50% 50%}
+.orn{transform-box:fill-box;transform-origin:50% 0%}
+.cover-candles{display:block;width:1080px;height:1920px;object-fit:cover;object-position:50% 50%;opacity:0;transform:scale(1.06);transform-origin:50% 42%}
+.cover-shade{position:absolute;left:0;top:1200px;width:1080px;height:720px;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(27,45,54,0) 0%,rgba(27,45,54,.18) 35%,rgba(27,45,54,.48) 100%)}
+.cover-kiss{display:block;width:1080px;height:1200px;object-fit:cover;object-position:50% 42%;opacity:0;transform:scale(1.08);transform-origin:50% 42%}
+.cover-shade{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(27,45,54,.16) 0%,rgba(27,45,54,0) 30%,rgba(27,45,54,0) 62%,rgba(27,45,54,.26) 100%)}
+.cover-sweep{position:absolute;top:0;left:-45%;width:42%;height:100%;z-index:3;pointer-events:none;opacity:0;background:linear-gradient(90deg,rgba(244,236,222,0),rgba(244,236,222,.28),rgba(244,236,222,0));transform:skewX(-12deg)}
+.cover-snow{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.cover-snow i{position:absolute;display:block;border-radius:50%;background:#F4ECDE;opacity:0}
+.cover-glow{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 52% 38%,rgba(214,161,43,.26) 0%,rgba(214,161,43,.08) 30%,rgba(214,161,43,0) 56%);mix-blend-mode:screen}
+.cover-life{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.flame-glow{position:absolute;border-radius:50%;filter:blur(12px);mix-blend-mode:screen;opacity:.16;
+  background:radial-gradient(circle,rgba(255,205,120,.55) 0%,rgba(230,165,60,.16) 44%,rgba(230,165,60,0) 72%)}
+.fg1{left:340px;top:430px;width:140px;height:180px}
+.fg2{left:595px;top:480px;width:120px;height:160px}
+.flame-core{position:absolute;border-radius:50%;filter:blur(5px);mix-blend-mode:screen;opacity:.12;background:radial-gradient(ellipse,rgba(255,244,214,.9) 0%,rgba(255,206,120,.35) 45%,rgba(255,206,120,0) 72%)}
+.fc1{left:398px;top:492px;width:24px;height:72px}
+.fc2{left:643px;top:518px;width:22px;height:66px}
+.cover-sheen{position:absolute;top:0;left:-380px;width:360px;height:1920px;opacity:0;transform:skewX(-12deg);
+  background:linear-gradient(90deg,rgba(244,236,222,0),rgba(244,236,222,.10),rgba(244,236,222,0))}
+.ember{position:absolute;width:4px;height:4px;border-radius:50%;background:#E9B45A;box-shadow:0 0 9px #D6A12B;opacity:0}
+.pop{transform-box:fill-box;transform-origin:50% 100%}
+.bg-pop{transform-origin:50% 50%}
+.draw{transform-box:fill-box;transform-origin:0 50%}
+.front-title{
+  position:absolute;left:0;top:1500px;width:1080px;height:420px;background:transparent;
+  border-top:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding-bottom:34px;
+}
+.title-star{width:26px;height:26px;color:var(--mustard);margin-bottom:7px;opacity:0;transform:scale(.7)}
+.front-merry{font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:500;font-size:150px;line-height:.8;color:var(--cream);letter-spacing:-.025em;overflow:hidden;padding-bottom:10px}
+.front-merry span{display:block;transform:translateY(110%)}
+.front-christmas{font-family:Jost,sans-serif;font-weight:600;font-size:70px;line-height:1;color:var(--mustard);letter-spacing:.06em;overflow:hidden;padding-bottom:7px;margin-top:7px}
+.front-christmas span{display:block;transform:translateY(110%)}
+.front-year{margin-top:12px;font-size:14px;letter-spacing:.42em;font-weight:500;color:var(--cream);opacity:0}
+.front-title.dark{background:var(--navy);border-top-color:var(--mustard)}
+.front-title.dark .front-merry{color:var(--cream)}
+.front-title.dark .front-christmas{color:var(--mustard)}
+.front-title.dark .front-year{color:var(--cream)}
+.front-title.dark .title-star{color:var(--mustard)}
+
+/* ---------- back: arch window picture + letter ---------- */
+.pic-wrap{position:absolute;left:118px;top:126px;width:844px;height:904px;padding:12px;background:var(--paper);
+  border-radius:422px 422px 0 0;box-shadow:0 20px 36px rgba(27,45,54,.17);z-index:2;opacity:0;transform-origin:50% 50%}
+.pic{position:relative;width:820px;height:880px;border-radius:410px 410px 0 0;overflow:hidden;background:#EFE4CE}
+.pic-full{position:absolute;inset:0;width:820px;height:880px;display:block;opacity:0;z-index:1}
+.shard{position:absolute;background-image:url('assets/img/004/kiss-arch.jpg');
+  background-repeat:no-repeat;background-size:820px 880px;will-change:transform}
+.pic-sweep{position:absolute;left:-430px;top:-40px;width:330px;height:980px;z-index:3;opacity:0;
+  background:linear-gradient(90deg,rgba(255,248,230,0),rgba(255,248,230,.5),rgba(255,248,230,0));
+  transform:skewX(-13deg);pointer-events:none}
+.to-block{top:38px;left:0;width:1080px;text-align:center}
+.from-block{bottom:44px;left:0;width:1080px;text-align:center}
+.back-copy{position:absolute;left:0;top:1058px;width:1080px;text-align:center;z-index:6;padding:0 90px}
+.copy-kicker{font-family:Jost,sans-serif;font-weight:500;font-size:13px;letter-spacing:.34em;color:var(--terra);opacity:0;transform:translateY(6px)}
+.copy-star{width:22px;height:22px;color:var(--terra);margin:10px auto 8px;opacity:0;transform:scale(.6)}
+.back-title{font-family:Jost,sans-serif;font-weight:500;font-size:50px;line-height:1;color:var(--navy);letter-spacing:.22em;white-space:nowrap;opacity:0}
+.back-year{margin-top:9px;font-size:22px;letter-spacing:.32em;font-weight:500;color:var(--terra);opacity:0}
+.copy-rule{display:flex;align-items:center;justify-content:center;gap:9px;width:150px;margin:16px auto 0;transform:scaleX(0)}
+.copy-rule i{display:block;height:1px;background:#C9B79A;flex:1}
+.copy-rule b{width:5px;height:5px;background:var(--terra);transform:rotate(45deg);display:block}
+.back-msg{margin:20px auto 0;max-width:820px;font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:400;font-size:40px;line-height:1.6;color:#4A4438}
+.msg-line{display:block;overflow:hidden}
+.msg-line span{display:block;transform:translateY(110%)}
+.back-sign{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:9px;font-family:Caveat,cursive;font-size:42px;line-height:1;color:var(--terra);opacity:0;transform:translateY(8px)}
+.back-date{margin-top:14px;font-size:10.5px;letter-spacing:.32em;color:#8C8270;font-weight:500;opacity:0}
+.copy-ps{margin-top:24px;font-family:Caveat,cursive;font-size:34px;line-height:1;color:var(--terra);opacity:0;transform:translateY(6px)}
+.heart-seal{position:absolute;left:900px;top:1600px;width:72px;height:72px;z-index:7;opacity:0;transform-origin:50% 50%}
+.heart-seal svg{width:72px;height:72px;display:block;transform-origin:50% 100%}
+.heart-seal path{fill:var(--terra);stroke:var(--paper);stroke-width:2.4;stroke-linejoin:round}
+.seal-ring{position:absolute;left:50%;top:50%;width:132px;height:132px;margin:-66px 0 0 -66px;border:1px solid rgba(188,74,46,.5);border-radius:50%;opacity:0;transform:scale(.35)}
+.addr{position:absolute;z-index:6}
+.addr-label{display:block;font-size:13px;letter-spacing:.34em;color:var(--terra);font-weight:500;margin-bottom:4px}
+.addr-name{display:block;font-family:Caveat,cursive;font-size:52px;line-height:1;color:var(--navy)}
+
+/* ---------- cabin cover ---------- */
+.cover-cabin{display:block;width:1080px;height:1920px}
+.pine{transform-origin:50% 100%}
+.step{transform-origin:50% 50%}
+.wglow{transform-origin:50% 50%}
+.af{transform-origin:50% 100%}
+#cabinWing,#cabinEave,#cabinChimney{transform-origin:50% 100%}
+#cabinWingWindow,#cabinAttic,#coverYearStar{transform-origin:50% 50%}
+#cabinFlame,#cabinFlameGlow{transform-origin:50% 100%}
+#coverMerry,#coverChristmas{transform-origin:50% 50%}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="15" data-width="1080" data-height="1920" data-fps="30">
+  <div class="stage-bg">
+    <div class="sun"></div><div class="arch"></div><div class="arch2"></div>
+    <div class="dots"></div><div class="grain"></div>
+  </div>
+
+  <div id="frame"><div id="scaler"><div id="card">
+
+    <!-- ================= FRONT ================= -->
+    <article class="face front" id="front">
+      <div class="front-art" id="frontArt">
+
+<svg class="cover cover-cabin is-active" data-cover="cabin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" width="1080" height="1920" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <rect id="paperRect" width="900" height="1600" fill="#F4EBD9" />
+
+    <!-- 星芒组件 -->
+    <g id="star2-orange" stroke="#D15627" stroke-width="4" stroke-linecap="round">
+      <line x1="0" y1="-55" x2="0" y2="55" />
+      <line x1="-55" y1="0" x2="55" y2="0" />
+      <line x1="-38" y1="-38" x2="38" y2="38" />
+      <line x1="-38" y1="38" x2="38" y2="-38" />
+      <circle cx="0" cy="-55" r="5" fill="#D15627" />
+      <circle cx="0" cy="55" r="5" fill="#D15627" />
+    </g>
+    <g id="star2-teal" stroke="#2B8A96" stroke-width="3.5" stroke-linecap="round">
+      <line x1="0" y1="-42" x2="0" y2="42" />
+      <line x1="-42" y1="0" x2="42" y2="0" />
+      <line x1="-30" y1="-30" x2="30" y2="30" />
+      <line x1="-30" y1="30" x2="30" y2="-30" />
+    </g>
+    <g id="star2-olive" stroke="#7A863B" stroke-width="3" stroke-linecap="round">
+      <line x1="0" y1="-36" x2="0" y2="36" />
+      <line x1="-36" y1="0" x2="36" y2="0" />
+      <line x1="-25" y1="-25" x2="25" y2="25" />
+      <line x1="-25" y1="25" x2="25" y2="-25" />
+    </g>
+
+    <!-- 几何松树模板 -->
+    <g id="pine-tree">
+      <rect x="-8" y="0" width="16" height="45" fill="#2E3532" />
+      <polygon points="0,-240 -65,-120 65,-120" />
+      <polygon points="0,-160 -80,-40 80,-40" />
+      <polygon points="0,-80 -95,10 95,10" />
+    </g>
+
+    <!-- 窗光 -->
+    <radialGradient id="warmGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#F8CE78" stop-opacity=".55" />
+      <stop offset=".45" stop-color="#F2AE4A" stop-opacity=".2" />
+      <stop offset="1" stop-color="#F2AE4A" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- 雪坡由下往上揭开 -->
+    <clipPath id="groundClip"><rect id="groundMask" x="0" y="1600" width="900" height="0" /></clipPath>
+    <clipPath id="wingClip"><polygon points="-240,0 -110,-360 60,-360 -30,0" /></clipPath>
+    <clipPath id="afClip"><polygon points="-10,0 75,-300 190,0" /></clipPath>
+
+    <!-- 纸片自下而上长出来 -->
+    <clipPath id="clip-mass"><rect id="mask-mass" x="-246" y="0" width="482" height="0" /></clipPath>
+    <clipPath id="clip-chimney"><rect id="mask-chimney" x="-57" y="-328" width="54" height="0" /></clipPath>
+    <clipPath id="clip-base"><rect id="mask-base" x="-17" y="0" width="184" height="0" /></clipPath>
+  </defs>
+
+  <use href="#paperRect" />
+
+  <!-- 顶部散落雪花星芒 -->
+  <g id="coverStars">
+    <g class="star" transform="translate(450, 210)"><g class="sa"><use href="#star2-orange" transform="scale(1.15)" /></g></g>
+    <g class="star" transform="translate(210, 220)"><g class="sa"><use href="#star2-olive" /></g></g>
+    <g class="star" transform="translate(690, 220)"><g class="sa"><use href="#star2-olive" /></g></g>
+    <g class="star" transform="translate(570, 310)"><g class="sa"><use href="#star2-teal" /></g></g>
+    <g class="star" transform="translate(330, 320)"><g class="sa"><use href="#star2-orange" transform="scale(0.75)" /></g></g>
+    <g class="star" transform="translate(140, 340)"><g class="sa"><use href="#star2-teal" transform="scale(0.65)" /></g></g>
+    <g class="star" transform="translate(760, 340)"><g class="sa"><use href="#star2-orange" transform="scale(0.65)" /></g></g>
+  </g>
+
+  <g id="coverSnow"></g>
+
+  <!-- 地面雪坡与小径 -->
+  <g clip-path="url(#groundClip)">
+    <ellipse cx="450" cy="1030" rx="446" ry="58" fill="#EFE4CE" />
+    <path d="M480,1004 H566 L600,1086 H442 Z" fill="#E0D4BB" />
+    <ellipse cx="450" cy="1000" rx="258" ry="18" fill="#E1D5BA" opacity=".9" />
+  </g>
+
+  <!-- 后排几何松树林 -->
+  <g class="pine"><use href="#pine-tree" transform="translate(140, 960) scale(1.05)" fill="#7A863B" /></g>
+  <g class="pine"><use href="#pine-tree" transform="translate(260, 940) scale(1.25)" fill="#2B8A96" /></g>
+  <g class="pine"><use href="#pine-tree" transform="translate(640, 940) scale(1.25)" fill="#2B8A96" /></g>
+  <g class="pine"><use href="#pine-tree" transform="translate(760, 960) scale(1.05)" fill="#7A863B" /></g>
+
+  <!-- 中叶现代主义 A-Frame 三角木屋主体 -->
+  <g id="cabin" transform="translate(450, 990)">
+    <!-- 炊烟 -->
+    <path id="cabinSmoke" d="M-26,-444 C-8,-470 -44,-492 -24,-520 C-8,-542 -34,-562 -16,-588" fill="none" stroke="#DCD1B8" stroke-width="15" stroke-linecap="round" />
+
+    <!-- 烟囱 -->
+    <g clip-path="url(#clip-chimney)">
+      <g id="cabinChimney">
+        <polygon points="-47,-330 -45,-430 -7,-430 -5,-330" fill="#D15627" />
+        <rect x="-53" y="-438" width="52" height="11" fill="#2E3532" />
+        <rect x="-55" y="-444" width="56" height="6" fill="#F4EBD9" />
+      </g>
+    </g>
+
+    <!-- 左侧建筑主体 / 檐带 / A-Frame 山墙（同一片纸，自雪线长出来） -->
+    <g clip-path="url(#clip-mass)">
+      <g id="cabinWing">
+        <polygon points="-240,0 -110,-360 60,-360 -30,0" fill="#2E3532" />
+        <line x1="-236" y1="-4" x2="-108" y2="-356" stroke="#F4EBD9" stroke-width="6" stroke-linecap="round" />
+      </g>
+      <g id="cabinEave">
+        <polygon points="-110,-360 60,-360 45,-315 -125,-315" fill="#D99B26" />
+        <polygon points="-100,-360 -70,-315 -125,-315" fill="#2B8A96" />
+        <polygon points="-20,-360 10,-315 -50,-315" fill="#D15627" />
+      </g>
+      <polygon class="af" points="-50,0 75,-370 230,0" fill="#D15627" />
+      <polygon class="af" points="-30,0 75,-335 210,0" fill="#2B8A96" />
+      <polygon class="af" points="-10,0 75,-300 190,0" fill="#D99B26" />
+    </g>
+
+    <!-- 左侧暖光斜窗 -->
+    <g clip-path="url(#wingClip)"><circle class="wglow" cx="-125" cy="-120" r="128" fill="url(#warmGlow)" opacity="0" /></g>
+    <g id="cabinWingWindow">
+      <polygon points="-185,-30 -125,-220 -75,-30" fill="#D15627" />
+      <polygon points="-170,-40 -125,-190 -90,-40" fill="#F0BC55" />
+      <line x1="-125" y1="-190" x2="-125" y2="-40" stroke="#2E3532" stroke-width="5" />
+    </g>
+
+    <!-- 阁楼三角暖光窗 -->
+    <g clip-path="url(#afClip)"><circle class="wglow" cx="77" cy="-214" r="108" fill="url(#warmGlow)" opacity="0" /></g>
+    <g id="cabinAttic">
+      <polygon points="35,-165 75,-275 120,-165" fill="#F4C150" />
+      <line x1="75" y1="-275" x2="75" y2="-165" stroke="#2E3532" stroke-width="5" />
+    </g>
+
+    <!-- 一层门廊与壁炉细节 -->
+    <g clip-path="url(#clip-base)">
+      <g id="cabinBase">
+        <rect x="-15" y="-120" width="180" height="120" fill="#2E3532" />
+        <rect x="65" y="-100" width="55" height="100" fill="#7A863B" />
+        <circle cx="92" cy="-65" r="14" fill="none" stroke="#2E3532" stroke-width="3" />
+        <rect x="130" y="-100" width="42" height="75" fill="#F4C150" />
+        <rect x="0" y="-85" width="52" height="85" fill="#D99B26" />
+        <rect x="10" y="-65" width="32" height="65" fill="#2E3532" />
+        <circle id="cabinFlameGlow" cx="26" cy="-28" r="46" fill="url(#warmGlow)" opacity="0" />
+        <path id="cabinFlame" d="M26,-52 C35,-36 39,-20 26,-9 C13,-20 17,-36 26,-52 Z" fill="#DE5A24" />
+        <path d="M26,-38 C30,-29 32,-21 26,-15 C20,-21 22,-29 26,-38 Z" fill="#F3B24A" />
+      </g>
+    </g>
+  </g>
+
+  <!-- 前景小树 -->
+  <g class="pine"><use href="#pine-tree" transform="translate(210, 1020) scale(0.65)" fill="#7A863B" /></g>
+  <g class="pine"><use href="#pine-tree" transform="translate(720, 1030) scale(0.6)" fill="#2B8A96" /></g>
+
+  <!-- 雪地脚印 -->
+  <g id="coverSteps" fill="#DCD1B8">
+    <ellipse class="step" cx="140" cy="1050" rx="10" ry="5" />
+    <ellipse class="step" cx="175" cy="1062" rx="10" ry="5" />
+    <ellipse class="step" cx="215" cy="1055" rx="10" ry="5" />
+    <ellipse class="step" cx="255" cy="1068" rx="10" ry="5" />
+    <ellipse class="step" cx="300" cy="1060" rx="10" ry="5" />
+    <ellipse class="step" cx="345" cy="1072" rx="10" ry="5" />
+    <ellipse class="step" cx="382" cy="1065" rx="10" ry="5" />
+    <ellipse class="step" cx="410" cy="1075" rx="10" ry="5" />
+    <ellipse class="step" cx="432" cy="1082" rx="10" ry="5" />
+  </g>
+
+  <!-- 底部复古几何无衬线文字 -->
+  <g id="coverTitle">
+    <text id="coverMerry" x="450" y="1246" font-family="'Futura', 'Century Gothic', 'Arial', sans-serif" font-weight="800" font-size="78" letter-spacing="8" fill="#2B8A96" text-anchor="middle">MERRY</text>
+    <text id="coverChristmas" x="450" y="1340" font-family="'Futura', 'Century Gothic', 'Arial', sans-serif" font-weight="800" font-size="78" letter-spacing="8" fill="#2B8A96" text-anchor="middle">CHRISTMAS</text>
+    <g id="coverYearStar" fill="none" stroke="#D15627" stroke-width="3" stroke-linecap="round">
+      <line x1="450" y1="1350" x2="450" y2="1370" />
+      <line x1="440" y1="1360" x2="460" y2="1360" />
+      <line x1="443" y1="1353" x2="457" y2="1367" />
+      <line x1="443" y1="1367" x2="457" y2="1353" />
+    </g>
+    <text id="coverYear" x="450" y="1412" font-family="'Jost', 'Futura', sans-serif" font-weight="500" font-size="30" letter-spacing="13" fill="#D15627" text-anchor="middle">2026</text>
+  </g>
+</svg>
+
+      </div>
+
+            <div class="grain-tex"></div>
+    </article>
+
+    <!-- ================= BACK ================= -->
+    <article class="face back" id="back">
+      <div class="pic-wrap" id="picWrap" role="img" aria-label="A kissing couple under falling snow, painted in 1950s mid-century modern style">
+        <div class="pic" id="pic"><img class="pic-full" id="picFull" src="assets/img/004/kiss-arch.jpg" alt=""><div class="pic-sweep" id="picSweep"></div></div>
+      </div>
+      <div class="addr to-block" id="toBlock"><span class="addr-label">TO</span><span class="addr-name">you</span></div>
+      <div class="addr from-block" id="fromBlock"><span class="addr-label">FROM</span><span class="addr-name">the two of us</span></div>
+      <div class="back-copy">
+        <div class="copy-kicker" id="copyKicker">A KISS UNDER THE SNOW</div>
+        <svg class="copy-star" id="copyStar" viewBox="0 0 44 44" aria-hidden="true"><g stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><line x1="22" y1="2" x2="22" y2="42"/><line x1="2" y1="22" x2="42" y2="22"/><line x1="7.8" y1="7.8" x2="36.2" y2="36.2"/><line x1="7.8" y1="36.2" x2="36.2" y2="7.8"/></g><circle cx="22" cy="22" r="3.6" fill="currentColor"/></svg>
+        <div class="back-title" id="backTitle">MERRY CHRISTMAS</div>
+        <div class="back-year" id="backYear">2026</div>
+        <div class="copy-rule" id="copyRule"><i></i><b></b><i></i></div>
+        <p class="back-msg">
+          <span class="msg-line"><span>I don't need a perfect Christmas.</span></span>
+          <span class="msg-line"><span>I just need this —</span></span>
+          <span class="msg-line"><span>the snow, the lights,</span></span>
+          <span class="msg-line"><span>and you beside me,</span></span>
+          <span class="msg-line"><span>exactly as you are.</span></span>
+        </p>
+        <div class="back-sign" id="backSign"><span>with love, the two of us</span></div>
+        <div class="back-date" id="backDate">25 · 12 · 2026</div>
+        <div class="copy-ps" id="copyPs">P.S. you're still my favorite gift.</div>
+      </div>
+      <div class="heart-seal" id="heartSeal">
+        <svg id="sealHeartSvg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.6S4.4 15.8 4.4 9.9A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.6 2.7c0 5.9-7.6 10.7-7.6 10.7z"/></svg>
+        <span class="seal-ring" id="sealRing"></span>
+      </div>
+      <div class="grain-tex"></div>
+    </article>
+
+  </div></div></div>
+
+  <div class="envelope" id="envelope">
+    <div class="env-back"></div>
+    <div class="env-front"></div>
+    <div class="env-ribbon"></div>
+    <svg class="env-fold" viewBox="0 0 480 640" aria-hidden="true"><path d="M0 0 L240 200 L480 0" fill="none" stroke="#C9B79A" stroke-width="1.6"/><path d="M0 150 L240 320 L480 150" fill="none" stroke="#C9B79A" stroke-width="2"/><path d="M0 150 L480 150" fill="none" stroke="#C9B79A" stroke-width="1.4" opacity=".7"/></svg>
+    <div class="env-flap" id="envFlap"><span>for you</span></div>
+    <div class="seal" id="envSeal">
+      <div class="seal-half seal-l"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.6S4.4 15.8 4.4 9.9A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.6 2.7c0 5.9-7.6 10.7-7.6 10.7z"/></svg></div>
+      <div class="seal-half seal-r"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.6S4.4 15.8 4.4 9.9A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.6 2.7c0 5.9-7.6 10.7-7.6 10.7z"/></svg></div>
+    </div>
+  </div>
+
+  <audio id="bgm" src="assets/bgm-mix.m4a" data-start="0" data-duration="15" data-volume="0.75"></audio>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="m-reindeer" viewBox="80 46 160 332">
+<g id="Reindeer_Antlers" fill="none" stroke="#2d261e" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+      
+      <path d="M 142,146 C 120,126 108,92 110,56" />
+      <path d="M 118,118 C 98,110 92,90 94,66" />
+      <path d="M 112,92 C 124,84 130,72 130,58" />
+      
+      <path d="M 174,146 C 196,126 208,92 206,56" />
+      <path d="M 198,118 C 218,110 224,90 222,66" />
+      <path d="M 204,92 C 192,84 186,72 186,58" />
+    </g>
+
+    
+    <g id="Antler_Ornaments">
+      
+      <line x1="94" y1="96" x2="94" y2="112" stroke="#2d261e" stroke-width="1.5" />
+      <polygon points="94,112 102,122 94,132 86,122" fill="#bc472b" />
+      <circle cx="94" cy="122" r="2" fill="#f7f4ed" />
+
+      
+      <line x1="108" y1="120" x2="108" y2="140" stroke="#2d261e" stroke-width="1.5" />
+      <circle cx="108" cy="152" r="12" fill="#7c8729" />
+      <rect x="97" y="150" width="22" height="4" fill="#f7f4ed" />
+      <circle cx="102" cy="152" r="1.2" fill="#2d261e" />
+      <circle cx="106" cy="152" r="1.2" fill="#2d261e" />
+      <circle cx="110" cy="152" r="1.2" fill="#2d261e" />
+      <circle cx="114" cy="152" r="1.2" fill="#2d261e" />
+
+      
+      <line x1="130" y1="74" x2="130" y2="88" stroke="#2d261e" stroke-width="1.5" />
+      <circle cx="130" cy="94" r="6" fill="#4ca3a0" />
+
+      
+      <line x1="222" y1="96" x2="222" y2="112" stroke="#2d261e" stroke-width="1.5" />
+      <circle cx="222" cy="122" r="10" fill="#4ca3a0" />
+      <path d="M 218,122 L 226,122 M 222,118 L 222,126" stroke="#f7f4ed" stroke-width="1.5" />
+
+      
+      <line x1="208" y1="120" x2="208" y2="138" stroke="#2d261e" stroke-width="1.5" />
+      <circle cx="208" cy="147" r="9" fill="#d19c26" />
+      <path d="M 204,147 L 212,147 M 208,143 L 208,151" stroke="#f7f4ed" stroke-width="1.5" />
+
+      
+      <circle cx="88" cy="148" r="2.2" fill="#2d261e" />
+      <circle cx="126" cy="186" r="2.5" fill="#d19c26" />
+      <circle cx="232" cy="146" r="2.2" fill="#2d261e" />
+      <circle cx="192" cy="106" r="2.2" fill="#bc472b" />
+    </g>
+
+    
+    <g id="Reindeer_Body">
+      
+      <path d="M 186,265 L 186,320 L 181,365 L 186,365 L 194,320 L 196,265 Z" fill="#5e3a24" />
+      <path d="M 196,265 L 204,318 L 200,368 L 205,368 L 212,318 L 206,260 Z" fill="#9c522b" />
+      
+      <path d="M 142,268 L 122,306 L 138,334 L 143,332 L 131,306 L 152,272 Z" fill="#bc472b" />
+      <path d="M 152,270 L 148,322 L 142,374 L 147,374 L 156,322 L 160,270 Z" fill="#bc472b" />
+
+      
+      <path d="M 212,238 C 224,234 228,244 218,252 Z" fill="#bc472b" />
+
+      
+      <path d="M 140,224 C 165,232 192,226 214,236 C 216,262 196,276 168,274 C 146,272 136,258 140,224 Z" fill="#bc472b" />
+      
+      <path d="M 156,272 C 174,274 192,270 202,258 C 186,264 170,264 156,272 Z" fill="#ebd9b9" />
+      
+      <circle cx="182" cy="240" r="2.5" fill="#2d261e" />
+      <circle cx="192" cy="242" r="2.2" fill="#2d261e" />
+      <circle cx="201" cy="244" r="2.5" fill="#2d261e" />
+      <circle cx="187" cy="249" r="2" fill="#2d261e" />
+
+      
+      <path d="M 142,176 L 164,176 L 172,234 L 140,234 Z" fill="#bc472b" />
+      <path d="M 142,182 L 152,182 L 152,232 L 140,232 Z" fill="#ebd9b9" />
+
+      
+      <path d="M 138,148 C 122,142 114,150 124,160 C 130,164 136,160 138,156 Z" fill="#9c522b" />
+      <path d="M 178,148 C 194,142 202,150 192,160 C 186,164 180,160 178,156 Z" fill="#9c522b" />
+
+      
+      <path d="M 136,146 C 148,136 168,136 180,146 L 176,178 C 166,192 150,192 140,178 Z" fill="#c85a32" />
+      
+      <path d="M 146,174 C 154,170 162,170 170,174 L 164,190 L 152,190 Z" fill="#ebd9b9" />
+      
+      <ellipse cx="158" cy="188" rx="5" ry="3.5" fill="#2d261e" />
+      <circle cx="147" cy="166" r="2.8" fill="#2d261e" />
+      <circle cx="169" cy="166" r="2.8" fill="#2d261e" />
+    </g>
+
+    
+    
+</symbol>
+<symbol id="m-candles" viewBox="60 70 205 305">
+<g id="Starburst_Large_Left" transform="translate(108, 108)" stroke="#2b2620" stroke-width="2" stroke-linecap="round">
+      <line x1="0" y1="-48" x2="0" y2="48" />
+      <line x1="-48" y1="0" x2="48" y2="0" />
+      <line x1="-34" y1="-34" x2="34" y2="34" />
+      <line x1="-34" y1="34" x2="34" y2="-34" />
+      <circle cx="0" cy="-48" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="0" cy="48" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="-48" cy="0" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="48" cy="0" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="-34" cy="-34" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="34" cy="34" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="-34" cy="34" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="34" cy="-34" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="0" cy="0" r="5" fill="#d19c26" stroke="none" />
+    </g>
+
+    
+    <g id="Starburst_Teal" transform="translate(96, 198)" stroke="#4ca3a0" stroke-width="2" stroke-linecap="round">
+      <line x1="0" y1="-22" x2="0" y2="22" />
+      <line x1="-22" y1="0" x2="22" y2="0" />
+      <line x1="-15" y1="-15" x2="15" y2="15" />
+      <line x1="-15" y1="15" x2="15" y2="-15" />
+    </g>
+
+    
+    <g id="Starburst_Large_Right" transform="translate(216, 174)" stroke="#2b2620" stroke-width="2" stroke-linecap="round">
+      <line x1="0" y1="-44" x2="0" y2="44" />
+      <line x1="-44" y1="0" x2="44" y2="0" />
+      <line x1="-31" y1="-31" x2="31" y2="31" />
+      <line x1="-31" y1="31" x2="31" y2="-31" />
+      <circle cx="0" cy="-44" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="0" cy="44" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="-44" cy="0" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="44" cy="0" r="2.5" fill="#d19c26" stroke="none" />
+      <circle cx="0" cy="0" r="4.5" fill="#d19c26" stroke="none" />
+    </g>
+
+    
+    <g id="Holly_Top_Right" transform="translate(182, 82)">
+      <path d="M 0,0 C 12,-14 26,-12 36,-20 C 32,-6 36,4 22,12 C 12,16 4,8 0,0 Z" fill="#7c8729" />
+      <path d="M 0,4 C 10,16 8,28 16,38 C 2,34 -8,38 -14,24 C -18,14 -8,8 0,4 Z" fill="#636e1e" />
+      <circle cx="-4" cy="-2" r="4.5" fill="#bc472b" />
+      <circle cx="5" cy="3" r="4.5" fill="#bc472b" />
+      <circle cx="-6" cy="7" r="4.5" fill="#bc472b" />
+    </g>
+
+    
+    <g id="Holly_Bottom_Left" transform="translate(74, 336)">
+      <path d="M 0,0 C -14,-14 -28,-10 -40,-18 C -34,-4 -38,8 -22,16 C -12,20 -4,10 0,0 Z" fill="#7c8729" />
+      <path d="M -2,6 C -14,18 -12,32 -22,42 C -6,38 6,42 12,28 C 16,18 6,10 -2,6 Z" fill="#636e1e" />
+      <circle cx="4" cy="0" r="5" fill="#bc472b" />
+      <circle cx="-5" cy="6" r="5" fill="#bc472b" />
+      <circle cx="6" cy="10" r="5" fill="#bc472b" />
+    </g>
+
+    
+    <g id="Candle_Left">
+      
+      <path d="M 148,186 C 142,202 142,216 148,220 C 154,216 154,202 148,186 Z" fill="#d19c26" />
+      <path d="M 148,198 C 145,208 145,216 148,218 C 151,216 151,208 148,198 Z" fill="#bc472b" />
+      
+      <rect x="139" y="224" width="18" height="106" fill="#bc472b" />
+      
+      <rect x="130" y="330" width="36" height="5" fill="#9a8c32" />
+      <rect x="142" y="335" width="12" height="26" fill="#9a8c32" />
+      <path d="M 118,361 L 178,361 L 184,368 L 112,368 Z" fill="#9a8c32" />
+      <circle cx="186" cy="354" r="9" fill="none" stroke="#9a8c32" stroke-width="4.5" />
+    </g>
+
+    
+    <g id="Candle_Right">
+      
+      <path d="M 216,158 C 210,174 210,188 216,192 C 222,188 222,174 216,158 Z" fill="#d19c26" />
+      <path d="M 216,170 C 213,180 213,188 216,190 C 219,188 219,180 216,170 Z" fill="#bc472b" />
+      
+      <rect x="207" y="196" width="18" height="96" fill="#4ca3a0" />
+      
+      <rect x="198" y="292" width="36" height="5" fill="#9a8c32" />
+      <rect x="210" y="297" width="12" height="24" fill="#9a8c32" />
+      <path d="M 188,321 L 244,321 L 250,328 L 182,328 Z" fill="#9a8c32" />
+      <circle cx="252" cy="314" r="8.5" fill="none" stroke="#9a8c32" stroke-width="4.5" />
+    </g>
+
+    
+    
+</symbol>
+<symbol id="m-santa" viewBox="88 72 170 300">
+<g id="Santa_Illustration">
+      
+      <path d="M 102,148 C 110,98 158,76 202,94 L 244,142 L 222,154 L 198,128 L 102,148 Z" fill="#bc472b" />
+      
+      <circle cx="246" cy="146" r="13" fill="#4ca3a0" />
+      
+      <rect x="94" y="144" width="128" height="24" rx="4" fill="#7fc4c2" />
+
+      
+      <rect x="114" y="168" width="88" height="54" fill="#f3dfc8" />
+
+      
+      <circle cx="140" cy="196" r="13" fill="none" stroke="#2d261e" stroke-width="3" />
+      <circle cx="176" cy="196" r="13" fill="none" stroke="#2d261e" stroke-width="3" />
+      <line x1="153" y1="196" x2="163" y2="196" stroke="#2d261e" stroke-width="3" />
+      <line x1="114" y1="196" x2="127" y2="196" stroke="#2d261e" stroke-width="3" />
+      <line x1="189" y1="196" x2="202" y2="196" stroke="#2d261e" stroke-width="3" />
+      <circle cx="140" cy="196" r="2.8" fill="#2d261e" />
+      <circle cx="176" cy="196" r="2.8" fill="#2d261e" />
+
+      
+      <path d="M 94,186 L 114,186 L 114,222 L 202,222 L 202,186 L 222,186 L 222,298 C 222,342 192,366 158,366 C 124,366 94,342 94,298 Z" fill="#b49d7e" />
+
+      
+      <g stroke="#f7f4ed" stroke-width="2" fill="none">
+        <line x1="94" y1="246" x2="222" y2="246" />
+        <line x1="94" y1="286" x2="222" y2="286" />
+        <line x1="104" y1="326" x2="212" y2="326" />
+        <line x1="136" y1="222" x2="136" y2="362" />
+        <line x1="180" y1="222" x2="180" y2="362" />
+        
+        <polyline points="94,246 115,286 136,246" />
+        <polyline points="136,246 158,286 180,246" />
+        <polyline points="180,246 201,286 222,246" />
+        <polyline points="94,286 115,326 136,286" />
+        <polyline points="136,286 158,326 180,286" />
+        <polyline points="180,286 201,326 222,286" />
+        <polyline points="136,326 158,364 180,326" />
+      </g>
+
+      
+      <path d="M 158,218 C 144,212 124,218 118,232 C 134,238 148,234 158,226 C 168,234 182,238 198,232 C 192,218 172,212 158,218 Z" fill="#f7f4ed" />
+      
+      <ellipse cx="158" cy="214" rx="8" ry="6" fill="#d9a58b" />
+    </g>
+
+    
+    
+</symbol>
+</defs></svg>
+
+<script>
+  const ACCENT = {cabin:'#255C5B'};
+  document.documentElement.style.setProperty('--accent', ACCENT.cabin);
+
+  /* deterministic snow */
+  let seed = 20261225;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const NS = 'http://www.w3.org/2000/svg';
+  const snowLayer = document.querySelector('#coverSnow');
+  const flakes = [];
+  for (let i = 0; i < 38; i++) {
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', (26 + rnd() * 848).toFixed(1));
+    c.setAttribute('cy', (-140 + rnd() * 1060).toFixed(1));
+    c.setAttribute('r', (1.8 + rnd() * 3.1).toFixed(2));
+    c.setAttribute('fill', i % 5 === 0 ? '#E6D9BE' : '#FCF6E9');
+    c.setAttribute('opacity', (0.42 + rnd() * 0.5).toFixed(2));
+    snowLayer.appendChild(c);
+    flakes.push(c);
+  }
+
+  /* the back picture, shattered into 25 irregular pieces */
+  const PICW = 820, PICH = 880, COLS = 5, ROWS = 5, CW = PICW / COLS, CH = PICH / ROWS;
+  let seed3 = 987654321;
+  const rnd3 = () => (seed3 = (seed3 * 16807) % 2147483647) / 2147483647;
+  const grid = [];
+  for (let r = 0; r <= ROWS; r++) {
+    grid[r] = [];
+    for (let c = 0; c <= COLS; c++) {
+      let x = c * CW, y = r * CH;
+      if (c > 0 && c < COLS) x += (rnd3() - .5) * 42;
+      if (r > 0 && r < ROWS) y += (rnd3() - .5) * 42;
+      grid[r][c] = { x, y };
+    }
+  }
+  const picEl = document.querySelector('#pic');
+  const shards = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const pts = [grid[r][c], grid[r][c + 1], grid[r + 1][c + 1], grid[r + 1][c]];
+      const x0 = Math.min(...pts.map(p => p.x)), y0 = Math.min(...pts.map(p => p.y));
+      const w = Math.max(...pts.map(p => p.x)) - x0, hh = Math.max(...pts.map(p => p.y)) - y0;
+      const d = document.createElement('div');
+      d.className = 'shard';
+      d.style.left = x0 + 'px';
+      d.style.top = y0 + 'px';
+      d.style.width = w + 'px';
+      d.style.height = hh + 'px';
+      d.style.backgroundPosition = `${-x0}px ${-y0}px`;
+      d.style.clipPath = 'polygon(' + pts.map(p => `${(p.x - x0).toFixed(2)}px ${(p.y - y0).toFixed(2)}px`).join(',') + ')';
+      picEl.appendChild(d);
+      shards.push(d);
+    }
+  }
+  let seed2 = 77113;
+  const rnd2 = () => (seed2 = (seed2 * 48271) % 2147483647) / 2147483647;
+  shards.forEach((d, i) => {
+    const ang = (i / shards.length) * Math.PI * 2 + (rnd2() - .5) * 1.1;
+    const dist = 560 + rnd2() * 380;
+    gsap.set(d, {
+      x: Math.cos(ang) * dist, y: Math.sin(ang) * dist,
+      rotation: (rnd2() - .5) * 26, scale: .72
+    });
+  });
+
+  const smoke = document.querySelector('#cabinSmoke');
+  const smokeLen = smoke.getTotalLength();
+
+  const tl = gsap.timeline({ paused: true });
+
+  /* ---- initial states ---- */
+  gsap.set('#card', { opacity: 0, scale: .30, x: 24, y: 20 });
+  gsap.set('#envelope', { opacity: 0, y: 60, scale: .72 });
+  gsap.set('.star', { opacity: 0 });
+  gsap.set('.sa', { attr: { transform: 'scale(0.2)' } });
+  gsap.set('.pine', { opacity: 0, y: 46 });
+  gsap.set('#cabinWingWindow', { opacity: 0 });
+  gsap.set('#cabinAttic', { opacity: 0 });
+  gsap.set('.wglow', { opacity: 0 });
+  gsap.set('#cabinFlameGlow', { opacity: 0 });
+  gsap.set('#cabinFlame', { scaleY: .82 });
+  gsap.set('.step', { opacity: 0, attr: { rx: 0, ry: 0 } });
+  gsap.set('#coverSnow', { opacity: 0 });
+  gsap.set('#cabinSmoke', { strokeDasharray: smokeLen, strokeDashoffset: smokeLen, opacity: 0 });
+  gsap.set('#coverMerry, #coverChristmas', { opacity: 0, y: 34 });
+  gsap.set('#coverYearStar', { opacity: 0 });
+  gsap.set('#coverYear', { opacity: 0, y: 14 });
+
+  gsap.set('#backHeart', { opacity: 0, y: -40, rotation: -3, scale: .97 });
+  gsap.set('#copyKicker', { opacity: 0, y: 6 });
+  gsap.set('#backTitle', { opacity: 0, y: 10, letterSpacing: '0.34em' });
+  gsap.set('#copyStar', { opacity: 0, scale: .6 });
+  gsap.set('#toBlock', { opacity: 0, y: -8 });
+  gsap.set('#fromBlock', { opacity: 0, y: 8 });
+  gsap.set('#copyRule', { scaleX: 0 });
+  gsap.set('#backYear', { opacity: 0, y: 8 });
+  gsap.set('#backSign', { opacity: 0, y: 8 });
+  gsap.set('#backDate', { opacity: 0 });
+  gsap.set('#copyPs', { opacity: 0, y: 6 });
+  gsap.set('#heartSeal', { opacity: 0, x: -334, y: -1126, rotation: -18 });
+  gsap.set('#picSweep', { x: 0, opacity: 0 });
+  gsap.set('#sealRing', { opacity: 0, scale: .35 });
+  gsap.set('.seal-l', { x: 0, rotation: 0, opacity: 1 });
+  gsap.set('.seal-r', { x: 0, rotation: 0, opacity: 1 });
+
+  /* 0–0.6 — a small card sleeve arrives */
+  tl.fromTo('#envelope', { opacity: 0, y: 60, scale: .72 },
+    { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'expo.out' }, 0);
+  tl.to('#envSeal', { scale: 1.05, duration: .24, repeat: 1, yoyo: true, ease: 'sine.inOut' }, .26);
+
+  /* 0.55–1.0 — flap opens, wax breaks, card rises out of the sleeve */
+  tl.to('#envFlap', { rotateX: -150, duration: .45, ease: 'power2.inOut' }, .55);
+  tl.to('.seal-l', { x: -52, rotation: -24, opacity: 0, duration: .3, ease: 'power2.in' }, .55);
+  tl.to('.seal-r', { x: 52, rotation: 24, opacity: 0, duration: .3, ease: 'power2.in' }, .55);
+  tl.to('#card', { opacity: 1, scale: 1, x: 0, y: 0, duration: .95, ease: 'power2.inOut' }, .72);
+  tl.to('#envelope', { opacity: 0, scale: .94, duration: .4, ease: 'power2.in' }, 1.12);
+
+  /* 1.3–3.1 — the cabin cover builds itself */
+  tl.to('#groundMask', { attr: { y: 926, height: 674 }, duration: .5, ease: 'power2.out' }, 1.3);
+  tl.to('.star', { opacity: 1, duration: .45, stagger: .055, ease: 'power2.out' }, 1.38);
+  tl.to('.sa', { attr: { transform: 'scale(1)' }, duration: .62, stagger: .055, ease: 'back.out(1.9)' }, 1.38);
+  tl.to('.pine', { opacity: 1, y: 0, duration: .8, stagger: .085, ease: 'power3.out' }, 1.5);
+  tl.to('#mask-mass', { attr: { y: -372, height: 374 }, duration: .82, ease: 'power3.out' }, 1.6);
+  tl.to('#mask-chimney', { attr: { y: -446, height: 118 }, duration: .45, ease: 'power3.out' }, 2.14);
+  tl.to('#mask-base', { attr: { y: -122, height: 124 }, duration: .45, ease: 'power3.out' }, 2.2);
+  tl.to('#cabinWingWindow', { opacity: 1, duration: .5, ease: 'power2.out' }, 2.3);
+  tl.to('#cabinAttic', { opacity: 1, duration: .45, ease: 'power2.out' }, 2.36);
+  tl.to('.wglow', { opacity: .62, duration: .85, ease: 'sine.out' }, 2.32);
+  tl.to('#cabinFlameGlow', { opacity: .55, duration: .7, ease: 'sine.out' }, 2.36);
+  tl.to('#cabinSmoke', { strokeDashoffset: 0, opacity: 1, duration: 1.1, ease: 'power2.out' }, 2.42);
+  tl.to('.step', { opacity: 1, attr: { rx: 10, ry: 5 }, duration: .3, stagger: .06, ease: 'back.out(2.4)' }, 2.26);
+  tl.to('#coverMerry', { opacity: 1, y: 0, duration: .7, ease: 'power3.out' }, 2.36);
+  tl.to('#coverChristmas', { opacity: 1, y: 0, duration: .7, ease: 'power3.out' }, 2.48);
+  tl.to('#coverYearStar', { opacity: 1, duration: .4, ease: 'power2.out' }, 2.62);
+  tl.to('#coverYear', { opacity: 1, y: 0, duration: .5, ease: 'power2.out' }, 2.68);
+
+  /* 2.7–4.6 — hold: snow, window light, smoke, stars */
+  tl.to('#coverSnow', { opacity: 1, duration: .7, ease: 'sine.out' }, 2.7);
+  flakes.forEach((f, i) => {
+    tl.to(f, { y: 120 + (i % 7) * 14, duration: 2.4 + (i % 5) * .22, ease: 'none' }, 2.7 + (i % 9) * .06);
+  });
+  tl.to('.wglow', { opacity: .44, duration: .85, repeat: 1, yoyo: true, ease: 'sine.inOut' }, 3.0);
+  tl.to('#cabinFlame', { scaleY: 1.18, duration: .19, repeat: 6, yoyo: true, ease: 'sine.inOut' }, 2.9);
+  tl.to('#cabinFlameGlow', { opacity: .8, duration: .35, repeat: 3, yoyo: true, ease: 'sine.inOut' }, 2.95);
+  tl.to('#cabinSmoke', { x: 7, duration: 1.2, repeat: 1, yoyo: true, ease: 'sine.inOut' }, 3.5);
+  tl.to('.star', { opacity: .6, duration: .4, stagger: { each: .13, from: 'random' } }, 3.05);
+  tl.to('.star', { opacity: 1, duration: .4, stagger: { each: .11, from: 'random' } }, 3.75);
+  tl.to('#card', { scale: 1.005, duration: 1.5, ease: 'sine.inOut' }, 3.0);
+
+  /* 4.6–5.56 — half flip */
+  tl.to('#card', { rotateY: 90, duration: .46, ease: 'power2.in' }, 4.6);
+  tl.set('#front', { opacity: 0 }, 5.06);
+  tl.set('#back', { opacity: 1 }, 5.06);
+  tl.to('#card', { rotateY: 0, duration: .5, ease: 'power2.out' }, 5.06);
+  tl.fromTo('#frame', { y: -7 }, { y: 0, duration: .4, ease: 'power2.out' }, 5.56);
+
+  /* 5.50–7.2 — the picture arrives as 25 shards and reassembles */
+  tl.to('#picWrap', { opacity: 1, duration: .35, ease: 'power2.out' }, 5.15);
+  tl.to(shards, { x: 0, y: 0, rotation: 0, scale: 1, duration: .85, ease: 'power2.out', stagger: { each: .02, from: 'random' } }, 5.35);
+  tl.set('#picFull', { opacity: 1 }, 6.66);
+  tl.set(shards, { autoAlpha: 0 }, 6.66);
+  tl.to('#picWrap', { scale: 1.012, duration: .18, ease: 'power2.out' }, 6.62);
+  tl.to('#picWrap', { scale: 1, duration: .55, ease: 'elastic.out(1,.62)' }, 6.8);
+  tl.to('#picSweep', { opacity: .5, duration: .2 }, 6.98);
+  tl.to('#picSweep', { x: 940, duration: .8, ease: 'power1.inOut' }, 6.98);
+  tl.to('#picSweep', { opacity: 0, duration: .35 }, 7.5);
+
+  /* 6.05–8.1 — TO, kicker, title, copy, FROM */
+  tl.to('#toBlock', { opacity: 1, y: 0, duration: .5, ease: 'power2.out' }, 6.05);
+  tl.to('#copyKicker', { opacity: 1, y: 0, duration: .5, ease: 'power2.out' }, 6.2);
+  tl.to('#copyStar', { opacity: 1, scale: 1, duration: .45, ease: 'back.out(1.7)' }, 6.3);
+  tl.to('#backTitle', { opacity: 1, y: 0, letterSpacing: '0.22em', duration: 1.05, ease: 'power3.out' }, 6.38);
+  tl.to('#backYear', { opacity: 1, y: 0, duration: .5, ease: 'power2.out' }, 6.58);
+  tl.to('#copyRule', { scaleX: 1, duration: .5, ease: 'power2.out' }, 6.68);
+  tl.to('.msg-line span', { y: '0%', duration: .65, ease: 'expo.out', stagger: .14 }, 6.78);
+  tl.to('#backSign', { opacity: 1, y: 0, duration: .55, ease: 'power2.out' }, 7.5);
+  tl.to('#backDate', { opacity: 1, duration: .45 }, 7.72);
+  tl.to('#copyPs', { opacity: 1, y: 0, duration: .55, ease: 'power2.out' }, 7.95);
+  tl.to('#fromBlock', { opacity: 1, y: 0, duration: .5, ease: 'power2.out' }, 7.85);
+
+  /* one heart from the kiss, down the right side */
+  tl.to('#heartSeal', { opacity: 1, duration: .14 }, 7.15);
+  tl.to('#heartSeal', { x: 52, y: -700, rotation: 12, duration: .34, ease: 'power1.in' }, 7.15);
+  tl.to('#heartSeal', { x: 30, y: -420, rotation: -8, duration: .22, ease: 'power2.out' }, 7.49);
+  tl.to('#heartSeal', { x: 10, y: -190, rotation: 9, duration: .2, ease: 'power1.in' }, 7.71);
+  tl.to('#heartSeal', { x: 0, y: 0, rotation: -6, duration: .28, ease: 'power2.in' }, 7.91);
+  [7.49, 7.71, 8.19].forEach(t => {
+    tl.to('#sealHeartSvg', { scaleX: 1.16, scaleY: .84, duration: .06, ease: 'power2.out' }, t);
+    tl.to('#sealHeartSvg', { scaleX: 1, scaleY: 1, duration: .13, ease: 'power2.out' }, t + .07);
+  });
+  tl.fromTo('#sealRing', { opacity: .55, scale: .35 }, { opacity: 0, scale: 1.55, duration: .9, ease: 'power2.out' }, 8.19);
+  tl.to('#heartSeal', { scale: 1.06, duration: .15, ease: 'power2.out' }, 8.37);
+  tl.to('#heartSeal', { scale: 1, duration: .34, ease: 'elastic.out(1,.55)' }, 8.53);
+
+  /* 8.6–14.8 — slow push in */
+  tl.fromTo('#scaler', { scale: .95556 }, { scale: .978, duration: 6.2, ease: 'power1.inOut' }, 8.6);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines.main = tl;
+  tl.seek(0);
+</script>
+</body>
+</html>
