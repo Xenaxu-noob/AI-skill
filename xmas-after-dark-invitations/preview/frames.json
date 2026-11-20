@@ -1,0 +1,17 @@
+[
+  {
+    "t": 0,
+    "file": "poster.png",
+    "expect": "六款完整亮封面"
+  },
+  {
+    "t": 1.1,
+    "file": "opening.jpg",
+    "expect": "切入棱镜暗场"
+  },
+  {
+    "t": 2.5,
+    "file": "reveal.jpg",
+    "expect": "银铬标题分拍进入"
+  }
+]

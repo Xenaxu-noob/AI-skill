@@ -4,6 +4,10 @@ A collection of reusable AI skills — packaged instructions, templates, and pro
 
 ## Skills
 
+### [Xmas After Dark Invitations](xmas-after-dark-invitations/)
+
+Six editable nightlife invitations with chrome titles, prismatic motion, and optional disco accompaniment. [Watch the six-layout preview](xmas-after-dark-invitations/preview/preview.mp4).
+
 ### [Secret Santa Unwrap Invitations](secret-santa-unwrap-invitations/)
 
 Four gift-exchange invitations with an animated kraft-paper reveal, editable event details, and optional Bach accompaniment. [Watch the preview](secret-santa-unwrap-invitations/preview/preview.mp4).

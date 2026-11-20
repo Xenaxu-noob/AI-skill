@@ -1,0 +1,7 @@
+{
+  "name": "xmas-after-dark-invitations",
+  "private": true,
+  "dependencies": {
+    "playwright": "1.55.0"
+  }
+}

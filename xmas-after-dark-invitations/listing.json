@@ -1,0 +1,48 @@
+{
+  "slug": "xmas-after-dark-invitations",
+  "title": "Xmas After Dark Invitations · 夜场邀请函",
+  "form": "film-template",
+  "usage": [
+    "direct"
+  ],
+  "kind": "video",
+  "intents": [
+    "Christmas nightlife invitation",
+    "Xmas After Dark invitation",
+    "disco party invitation",
+    "club night invite MP4",
+    "chrome typography invitation",
+    "prism light reveal",
+    "Christmas after-party video",
+    "圣诞夜场邀请函",
+    "镜面球派对请柬",
+    "银铬标题动效",
+    "霓虹派对邀请视频"
+  ],
+  "tags": [
+    "christmas",
+    "nightlife",
+    "disco",
+    "invitation"
+  ],
+  "outputs": {
+    "aspect": [
+      "4:5"
+    ],
+    "seconds": [
+      10,
+      10
+    ],
+    "fps": 24
+  },
+  "cost": "free",
+  "runtime": {
+    "minTier": "A",
+    "checked": "2026-11-20"
+  },
+  "copyPrompt": "用 Xmas After Dark Invitations 做夜场邀请函。先展示六款和自定义选项，收集活动信息。卡面默认英文。",
+  "sourceTerms": [
+    "The Velvet Room",
+    "Dec 23 · 9 PM"
+  ]
+}
