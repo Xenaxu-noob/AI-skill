@@ -1,0 +1,166 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Christmas Cookie Workshop</title>
+<style>body{margin:0}canvas{display:block}</style>
+<canvas width="720" height="900"></canvas>
+<script>
+const image = new Image();
+image.src = window.cookieArtwork;
+const width = 1122;
+const height = 1402;
+const output = document.querySelector('canvas').getContext('2d');
+function layer() {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  return canvas.getContext('2d');
+}
+const paper = layer();
+const config = window.invitation;
+const layout = config.design;
+const reveals = [2.40,2.61,3.17,3.72,4.27];
+let fields;
+function fitFields() {
+  const used=[];
+  return config.copy.map((copy,index)=>{
+    if (!copy) return null;
+    const [x,y,maxWidth,maxSize]=layout.boxes[index];
+    const align=layout.align;
+    const type=size=>(index===1 ? 'bold ' : '')+size+'px Georgia, "Songti SC", "Noto Serif CJK SC", serif';
+    for(let size=maxSize;size>=24;size--){
+      output.font=type(size);
+      let lines=copy.split('\n');
+      if(index===1 && lines.length===1 && output.measureText(copy).width>maxWidth){
+        const containsSpaces=/\s/.test(copy);
+        const units=containsSpaces ? copy.trim().split(/\s+/) : [...copy];
+        lines=[''];
+        for(const part of units){
+          const last=lines.length-1;
+          const next=lines[last]+(lines[last] && containsSpaces ? ' ' : '')+part;
+          if(output.measureText(next).width<=maxWidth) lines[last]=next;
+          else lines.push(part);
+        }
+      }
+      if(lines.length>(index===1 ? 2 : 1) || lines.some(line=>!line.trim())) continue;
+      const boxes=lines.map((line,row)=>{
+        const metric=output.measureText(line);
+        const left=align==='center' ? x-metric.width/2 : x;
+        const baseline=y+row*size*1.02;
+        return {left,right:left+metric.width,top:baseline-metric.actualBoundingBoxAscent,
+          bottom:baseline+metric.actualBoundingBoxDescent, width:metric.width};
+      });
+      if(boxes.some(box=>box.width>maxWidth || box.left<42 || box.right>1090 ||
+        box.top<35 || box.bottom>1365 || used.some(other=>box.left<other.right &&
+          box.right>other.left && box.top<other.bottom && box.bottom>other.top))) continue;
+      used.push(...boxes);
+      return {x,y,lines,size,font:type(size),align};
+    }
+    throw Error('Text does not fit layout: '+copy);
+  });
+}
+function smooth(time, start, end) {
+  const value = Math.min(1, Math.max(0, (time - start) / (end - start)));
+  return value * value * (3 - 2 * value);
+}
+window.ready = image.decode().then(() => {
+  if (Math.abs(image.width/image.height-.8)>.018) throw Error('Artwork must be 4:5');
+  paper.drawImage(image,0,0,width,height);
+  fields=fitFields();
+  if(config.custom) return;
+  const [sx,sy,sw,sh]=layout.sample;
+  const texture=paper.getImageData(sx,sy,sw,sh).data;
+  const mirror=(index,size)=>{
+    const tile=index%(2*size);
+    return tile<size ? tile : 2*size-1-tile;
+  };
+  for (const [x,y,w,h] of layout.text) {
+    const pixels=paper.getImageData(x,y,w,h);
+    for (let row=0;row<h;row++) {
+      for (let col=0;col<w;col++) {
+        const pixel=(row*w+col)*4;
+        const sample=(mirror(row+y,sh)*sw+mirror(col+x,sw))*4;
+        const feather=Math.min(1,Math.min(row,col,w-col-1,h-row-1)/12);
+        for(let ch=0;ch<3;ch++) {
+          pixels.data[pixel+ch]=pixels.data[pixel+ch]*(1-feather)+texture[sample+ch]*feather;
+        }
+      }
+    }
+    paper.putImageData(pixels,x,y);
+  }
+
+});
+function parchment(time) {
+  const opening = smooth(time,.46,1.27);
+  const edge = 160 - 340 * opening;
+  if (edge < -154) return;
+  output.save();
+  output.resetTransform();
+  const fold = new Path2D();
+  fold.moveTo(0,0);
+  fold.lineTo(edge+90,0);
+  fold.bezierCurveTo(edge+8,230,edge+155,585,edge,900);
+  fold.lineTo(0,900);
+  fold.closePath();
+  output.shadowColor='rgba(65,39,20,.32)';
+  output.shadowBlur=24;
+  output.shadowOffsetX=8;
+  output.fillStyle='#d4b48b';
+  output.fill(fold);
+  output.shadowColor='transparent';
+  output.clip(fold);
+  output.drawImage(image,80,958,132,167,-100,0,edge+275,900);
+  const shade=output.createLinearGradient(0,0,edge+150,0);
+  shade.addColorStop(0,'#f0d7a727');
+  shade.addColorStop(.8,'#e6bf8a53');
+  shade.addColorStop(1,'#71442238');
+  output.fillStyle=shade;
+  output.fillRect(0,0,720,900);
+  output.restore();
+}
+window.frame = time => {
+  const glide = smooth(time,.46,1.56);
+  const lift = smooth(time,1.20,3.0);
+  const zoom = 1 + 3.12 * (1-lift);
+  const fromX = layout.start[0]+(layout.end[0]-layout.start[0])*glide;
+  const fromY = layout.start[1]+(layout.end[1]-layout.start[1])*glide;
+  const x = 561 + (fromX-561)*(1-lift);
+  const y = 701 + (fromY-701)*(1-lift);
+  const sx = 720/width*zoom;
+  const sy = 900/height*zoom;
+  output.setTransform(sx,0,0,sy,360-x*sx,450-y*sy);
+  output.drawImage(paper.canvas,0,0);
+  fields.forEach((field,index)=>{
+    if(!field) return;
+    output.fillStyle=index===0 ? '#7e2634' : '#50250f';
+    output.font=field.font;
+    output.textBaseline='alphabetic';
+    output.textAlign=field.align;
+    for(const [row,line] of field.lines.entries()){
+      const start=reveals[index]+row*.20;
+      const amount=smooth(time,start,start+.37);
+      output.globalAlpha=amount;
+      output.fillText(line,field.x,field.y+row*field.size*1.02+7*(1-amount));
+    }
+  });
+  output.globalAlpha=1;
+  if(layout.peel && !config.custom) parchment(time);
+  const captionAlpha=1-smooth(time,.46,.89);
+  if (config.intro && captionAlpha>0) {
+    output.save();
+    output.resetTransform();
+    output.globalAlpha=captionAlpha;
+    output.font='23px Georgia, serif';
+    output.textAlign='center';
+    output.textBaseline='middle';
+    const labelWidth=output.measureText(config.intro).width+62;
+    output.fillStyle='#f8eddb';
+    output.fillRect((720-labelWidth)/2,765,labelWidth,54);
+    output.strokeStyle='#a66d45';
+    output.lineWidth=1;
+    output.strokeRect((720-labelWidth)/2+3,768,labelWidth-6,48);
+    output.fillStyle='#55301d';
+    output.fillText(config.intro,360,792);
+    output.restore();
+  }
+};
+</script>

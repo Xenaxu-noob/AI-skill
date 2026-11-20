@@ -4,6 +4,10 @@ A collection of reusable AI skills — packaged instructions, templates, and pro
 
 ## Skills
 
+### [Christmas Cookie Workshop](christmas-cookie-workshop-invitations/)
+
+Four editable baking-workshop invitations with realistic cookie close-ups, animated copy and optional Chopin accompaniment. Invitation copy defaults to English. [Watch the four-layout preview](christmas-cookie-workshop-invitations/preview/preview.mp4).
+
 ### [Candlelit Christmas Invitations](candlelit-christmas-invitations/)
 
 Six editable midnight-blue dinner invitations with a fixed-camera candlelight reveal and optional Chopin accompaniment. [Watch the six-layout preview](candlelit-christmas-invitations/preview/preview.mp4).

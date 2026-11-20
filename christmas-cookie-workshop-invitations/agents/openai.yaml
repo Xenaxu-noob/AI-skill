@@ -1,0 +1,4 @@
+interface:
+  display_name: "Christmas Cookie Workshop"
+  short_description: "燕麦色纸面与真实烘焙桌景的动态邀请函"
+  default_prompt: "用这个 Skill 做烘焙邀请函。先给我看版式，问我缺少的活动文案，卡面默认英文。"

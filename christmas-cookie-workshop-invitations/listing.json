@@ -1,0 +1,48 @@
+{
+  "slug": "christmas-cookie-workshop-invitations",
+  "title": "Christmas Cookie Workshop · 烘焙工坊动态邀请函",
+  "form": "film-template",
+  "usage": [
+    "direct"
+  ],
+  "kind": "video",
+  "intents": [
+    "圣诞烘焙邀请函",
+    "饼干工坊邀请卡",
+    "姜饼活动动态请柬",
+    "圣诞亲子烘焙活动",
+    "手作活动视频邀请函",
+    "Christmas cookie workshop invitation",
+    "gingerbread decorating invitation",
+    "cookie decorating party invite",
+    "baking class invitation MP4",
+    "Christmas baking invitation video",
+    "holiday baking workshop template"
+  ],
+  "tags": [
+    "christmas",
+    "cookies",
+    "baking",
+    "invitation"
+  ],
+  "outputs": {
+    "aspect": [
+      "4:5"
+    ],
+    "seconds": [
+      10,
+      10
+    ],
+    "fps": 24
+  },
+  "cost": "free",
+  "runtime": {
+    "minTier": "A",
+    "checked": "2026-11-20"
+  },
+  "copyPrompt": "用 Christmas Cookie Workshop 技能制作烘焙动态邀请函。先选版式并说明活动名称、日期时间、地点和可选 RSVP；卡面默认英文。",
+  "sourceTerms": [
+    "The Flour Studio",
+    "Dec 21 · 2–4 PM"
+  ]
+}
