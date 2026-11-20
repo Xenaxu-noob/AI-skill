@@ -1,0 +1,198 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Secret Santa</title>
+<style>body{margin:0}canvas{display:block}</style>
+<canvas width="720" height="900"></canvas>
+<script>
+const ctx=document.querySelector('canvas').getContext('2d');
+const width=720, height=900, knot=[359,424];
+const [card,closed,paper]=window.artwork.map(source=>{
+  const image=new Image();
+  image.src=source;
+  return image;
+});
+const details=window.details;
+const configuration=window.invitation;
+let lettering;
+function fitCopy() {
+  const used=[];
+  return configuration.copy.map((copy,index)=>{
+    if(!copy) return null;
+    const [x,y,width,maximum]=configuration.design.boxes[index];
+    const align=configuration.design.align;
+    const fontAt=size=> index===1
+      ? 'italic '+size+'px "Snell Roundhand", "Apple Chancery", Georgia, "Songti SC", serif'
+      : size+'px Georgia, "Songti SC", "Noto Serif CJK SC", serif';
+    for(let size=maximum;size>=17;size--){
+      ctx.font=fontAt(size);
+      let lines=copy.split('\n');
+      if(index===1 && lines.length===1 && ctx.measureText(copy).width>width){
+        const tokens=copy.split(/\s+/);
+        if(tokens.length>1){
+          const split=Math.ceil(tokens.length/2);
+          lines=[tokens.slice(0,split).join(' '),tokens.slice(split).join(' ')];
+        }
+      }
+      if(lines.length>(index===1 ? 2 : 1) || lines.some(line=>!line.trim())) continue;
+      const rows=lines.map((line,row)=>{
+        const metric=ctx.measureText(line);
+        const left=align==='center' ? x-metric.width/2 : x;
+        const baseline=y+row*size*.98;
+        return {left,right:left+metric.width,top:baseline-metric.actualBoundingBoxAscent,
+          bottom:baseline+metric.actualBoundingBoxDescent,width:metric.width};
+      });
+      if(rows.some(r=>r.left<24 || r.right>696 || r.top<25 || r.bottom>875 || r.width>width ||
+        used.some(o=>r.left<o.right && r.right>o.left && r.top<o.bottom && r.bottom>o.top))) continue;
+      used.push(...rows);
+      return {x,y,size,align,lines,font:fontAt(size)};
+    }
+    throw Error('Text does not fit this layout: '+copy);
+  });
+}
+const blank=document.createElement('canvas');
+blank.width=width;
+blank.height=height;
+const clean=blank.getContext('2d',{willReadFrequently:true});
+function ease(time,start,end) {
+  const value=Math.max(0,Math.min(1,(time-start)/(end-start)));
+  return value*value*(3-2*value);
+}
+window.ready=Promise.all([card.decode(),closed.decode(),paper.decode()]).then(()=>{
+  if(Math.abs(card.width/card.height-.8)>.016) throw Error('Artwork must be 4:5');
+  clean.drawImage(card,0,0,width,height);
+  if(!configuration.reference) lettering=fitCopy();
+  if(configuration.custom) return;
+  for(const [x,y,w,h] of details) {
+    const region=clean.getImageData(x,y,w,h);
+    const source=region.data.slice();
+    const mask=new Uint8Array(w*h);
+    for(let row=0;row<h;row++) {
+      for(let col=0;col<w;col++) {
+        const pixel=(row*w+col)*4;
+        if(source[pixel+1]>=153 || source[pixel]-source[pixel+1]<=31) continue;
+        for(let dy=-2;dy<=2;dy++){
+          for(let dx=-2;dx<=2;dx++){
+            const nextRow=row+dy,nextCol=col+dx;
+            if(nextRow>=0 && nextRow<h && nextCol>=0 && nextCol<w) mask[nextRow*w+nextCol]=1;
+          }
+        }
+      }
+    }
+    const ink=i=>mask[i/4]===1;
+    for(let row=0;row<h;row++) {
+      for(let col=0;col<w;col++) {
+        const i=(row*w+col)*4;
+        if(!ink(i)) continue;
+        let above=row-1;
+        let below=row+1;
+        while(above>=0 && ink((above*w+col)*4)) above--;
+        while(below<h && ink((below*w+col)*4)) below++;
+        const top=Math.max(0,above), bottom=Math.min(h-1,below);
+        const mix=(row-top)/Math.max(1,bottom-top);
+        for(let ch=0;ch<3;ch++){
+          region.data[i+ch]=source[(top*w+col)*4+ch]*(1-mix)+source[(bottom*w+col)*4+ch]*mix;
+        }
+      }
+    }
+    clean.putImageData(region,x,y);
+  }
+
+});
+
+const corners=[[0,0],[width,0],[width,height],[0,height]];
+const directions=[[0,1],[1,0],[0,1],[1,0]];
+const timing=[[1.76,2.91],[1.91,3.19],[1.81,3.04],[1.95,3.27]];
+function fold(index,time) {
+  const progress=ease(time,...timing[index]);
+  const depth=Math.cos(progress*Math.PI/2);
+  if(progress>=1) return;
+  const a=corners[index], b=corners[(index+1)%4];
+  const [dx,dy]=directions[index];
+  const tip=[dx ? a[0]+(knot[0]-a[0])*depth : knot[0],
+             dy ? a[1]+(knot[1]-a[1])*depth : knot[1]];
+  const shape=new Path2D();
+  shape.moveTo(...a);
+  shape.lineTo(...b);
+  shape.lineTo(...tip);
+  shape.closePath();
+  ctx.save();
+  ctx.shadowColor='rgba(47,25,17,'+(.47*Math.sin(progress*Math.PI))+')';
+  ctx.shadowBlur=23*Math.sin(progress*Math.PI);
+  ctx.shadowOffsetY=5;
+  ctx.fillStyle='#ae7951';
+  ctx.fill(shape);
+  ctx.shadowColor='transparent';
+  ctx.clip(shape);
+  ctx.translate(a[0],a[1]);
+  ctx.scale(dx ? depth : 1,dy ? depth : 1);
+  ctx.translate(-a[0],-a[1]);
+  ctx.drawImage(paper,0,0,width,height);
+  ctx.resetTransform();
+  const shade=ctx.createLinearGradient((a[0]+b[0])/2,(a[1]+b[1])/2,tip[0],tip[1]);
+  shade.addColorStop(0,'rgba(66,38,24,'+(.32*progress)+')');
+  shade.addColorStop(1,'rgba(255,227,181,'+(.25*Math.sin(progress*Math.PI))+')');
+  ctx.fillStyle=shade;
+  ctx.fillRect(0,0,width,height);
+  ctx.restore();
+}
+function seal(time) {
+  const movement=ease(time,1.76,2.46);
+  if(movement>=1 || !configuration.seal) return;
+  ctx.save();
+  ctx.translate(knot[0],knot[1]-212*movement);
+  ctx.rotate(-.055-.13*movement);
+  ctx.scale(1,1-.66*movement);
+  ctx.globalAlpha=1-ease(time,2.13,2.46);
+  ctx.shadowColor='#54301f66';
+  ctx.shadowBlur=6;
+  ctx.shadowOffsetY=2.5;
+  const circle=new Path2D();
+  circle.ellipse(0,0,72,68,0,0,Math.PI*2);
+  const paperTone=ctx.createLinearGradient(-36,-50,22,68);
+  paperTone.addColorStop(0,'#f7ead4');
+  paperTone.addColorStop(1,'#e1c69c');
+  ctx.fillStyle=paperTone;
+  ctx.fill(circle);
+  ctx.shadowColor='transparent';
+  ctx.strokeStyle='#8b4650a1';
+  ctx.lineWidth=1.25;
+  ctx.beginPath();
+  ctx.ellipse(0,0,63,59,0,0,Math.PI*2);
+  ctx.stroke();
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillStyle='#732630';
+  ctx.font='italic 25px Georgia, serif';
+  const words=configuration.seal.split(/\s+/);
+  const midpoint=Math.ceil(words.length/2);
+  const lines=[words.slice(0,midpoint).join(' '),words.slice(midpoint).join(' ')].filter(Boolean);
+  lines.forEach((line,i)=>ctx.fillText(line,0,(i-(lines.length-1)/2)*28,108));
+  ctx.restore();
+}
+window.frame=time=>{
+  ctx.drawImage(blank,0,0);
+  if(configuration.reference) {
+    for(const [x,y,w,h,start] of details) {
+      const progress=ease(time,start+.52,start+.52+(start===1.54 ? .83 : .39));
+      if(progress<=0) continue;
+      ctx.globalAlpha=progress;
+      ctx.drawImage(card,x*card.width/width,y*card.height/height,w*card.width/width,h*card.height/height,x,y,w,h);
+    }
+  } else {
+    lettering.forEach((field,index)=>{
+      if(!field) return;
+      const start=details[index][4]+.52;
+      ctx.globalAlpha=ease(time,start,start+(index===1 ? .83 : .39));
+      ctx.font=field.font;
+      ctx.textAlign=field.align;
+      ctx.textBaseline='alphabetic';
+      ctx.fillStyle='#68242b';
+      field.lines.forEach((line,row)=>ctx.fillText(line,field.x,field.y+row*field.size*.98));
+    });
+  }
+  ctx.globalAlpha=1;
+  const foldingTime=time+1.20;
+  for(let index=0;index<4;index++) fold(index,foldingTime);
+  seal(foldingTime);
+};
+</script>

@@ -1,0 +1,17 @@
+[
+  {
+    "t": 0,
+    "file": "opening.jpg",
+    "expect": "牛皮纸接缝中央的封口贴"
+  },
+  {
+    "t": 1.9,
+    "file": "reveal.jpg",
+    "expect": "翻开的牛皮纸和独立请柬"
+  },
+  {
+    "t": 5,
+    "file": "poster.png",
+    "expect": "四款独立请柬与完整活动信息"
+  }
+]

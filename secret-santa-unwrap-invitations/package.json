@@ -1,0 +1,7 @@
+{
+  "name": "secret-santa-unwrap-invitations",
+  "private": true,
+  "dependencies": {
+    "playwright": "1.55.0"
+  }
+}

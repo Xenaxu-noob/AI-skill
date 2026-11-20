@@ -1,0 +1,4 @@
+interface:
+  display_name: "Secret Santa Unwrap Invitations"
+  short_description: "牛皮纸四向揭开与酒红手写字的动态请柬"
+  default_prompt: "用这个 Skill 做 Secret Santa 邀请函。先给我选版，再问我缺少的活动信息。文案默认英文。"

@@ -4,6 +4,10 @@ A collection of reusable AI skills — packaged instructions, templates, and pro
 
 ## Skills
 
+### [Secret Santa Unwrap Invitations](secret-santa-unwrap-invitations/)
+
+Four gift-exchange invitations with an animated kraft-paper reveal, editable event details, and optional Bach accompaniment. [Watch the preview](secret-santa-unwrap-invitations/preview/preview.mp4).
+
 ### [Christmas Cookie Workshop](christmas-cookie-workshop-invitations/)
 
 Four editable baking-workshop invitations with realistic cookie close-ups, animated copy and optional Chopin accompaniment. Invitation copy defaults to English. [Watch the four-layout preview](christmas-cookie-workshop-invitations/preview/preview.mp4).

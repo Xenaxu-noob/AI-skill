@@ -1,0 +1,49 @@
+{
+  "slug": "secret-santa-unwrap-invitations",
+  "title": "Secret Santa Unwrap Invitations · 拆礼邀请函",
+  "form": "film-template",
+  "usage": [
+    "direct"
+  ],
+  "kind": "video",
+  "intents": [
+    "Secret Santa invitation",
+    "gift exchange invitation video",
+    "Christmas unwrapping invitation",
+    "Secret Santa MP4",
+    "gift swap party invite",
+    "wrapping paper reveal",
+    "圣诞匿名交换礼物",
+    "拆礼动态邀请函",
+    "礼物交换请柬",
+    "牛皮纸揭幕动效",
+    "手写圣诞邀请卡",
+    "礼物预算邀请函"
+  ],
+  "tags": [
+    "christmas",
+    "secret-santa",
+    "invitation",
+    "unwrapping"
+  ],
+  "outputs": {
+    "aspect": [
+      "4:5"
+    ],
+    "seconds": [
+      10,
+      10
+    ],
+    "fps": 24
+  },
+  "cost": "free",
+  "runtime": {
+    "minTier": "A",
+    "checked": "2026-11-20"
+  },
+  "copyPrompt": "用 Secret Santa Unwrap Invitations 做拆礼动态邀请函。先展示版式和同风格新卡面选项，收集活动文案。卡面默认英文。",
+  "sourceTerms": [
+    "The Pine Room",
+    "Dec 22 · 7 PM"
+  ]
+}
